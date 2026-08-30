@@ -1,0 +1,79 @@
+name: Benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      limits:
+        description: "Upper limits separated by spaces"
+        required: true
+        default: "1000 10000 100000"
+        type: string
+      repeats:
+        description: "Repetitions per method and limit"
+        required: true
+        default: "5"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Record environment
+        run: |
+          {
+            echo "Repository: $GITHUB_REPOSITORY"
+            echo "Commit: $GITHUB_SHA"
+            echo "Ref: $GITHUB_REF"
+            echo "Runner OS: $RUNNER_OS"
+            echo "Runner arch: $RUNNER_ARCH"
+            python --version
+            uname -a
+            echo
+            echo "CPU information:"
+            lscpu
+          } | tee environment.txt
+
+      - name: Run independent verification
+        run: python ci_verify.py 4999
+
+      - name: Run benchmark
+        env:
+          LIMITS: ${{ inputs.limits }}
+          REPEATS: ${{ inputs.repeats }}
+        run: |
+          python benchmark.py $LIMITS --repeats "$REPEATS" --csv benchmark-results.csv | tee benchmark-output.txt
+
+      - name: Add benchmark to job summary
+        run: |
+          {
+            echo "## Prime-search benchmark"
+            echo
+            echo "**Commit:** \`$GITHUB_SHA\`"
+            echo
+            echo '```text'
+            cat benchmark-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: prime-benchmark-${{ github.run_number }}
+          path: |
+            benchmark-results.csv
+            benchmark-output.txt
+            environment.txt
+          retention-days: 90
