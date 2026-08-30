@@ -67,6 +67,17 @@ jobs:
             --sample-size "$SAMPLE_SIZE" \
             --output-dir base-study-output | tee base-study-output.txt
 
+      - name: Run digit null baseline
+        env:
+          LIMIT: ${{ inputs.limit || '10000000' }}
+          SAMPLE_SIZE: ${{ inputs.sample_size || '200000' }}
+        run: |
+          python base_digit_null_study.py "$LIMIT" \
+            --bases-max 100 \
+            --sample-size "$SAMPLE_SIZE" \
+            --output base-study-output/digit_null_baseline.csv \
+            --summary base-study-output/digit_null_summary.json | tee base-study-null-output.txt
+
       - name: Add summary to job
         run: |
           {
@@ -76,6 +87,8 @@ jobs:
             echo
             echo '```text'
             cat base-study-output.txt
+            echo
+            cat base-study-null-output.txt
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
 
@@ -86,5 +99,6 @@ jobs:
           path: |
             base-study-output/
             base-study-output.txt
+            base-study-null-output.txt
             base-study-environment.txt
           retention-days: 90
