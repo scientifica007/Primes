@@ -64,27 +64,57 @@ python retain_prime_compact_method.py 100
 
 ### `retain_prime_packed_output_method.py`
 
-المرحلة التالية من ضغط الذاكرة: تضغط **فضاء المرشحين والناتج معًا**.
+تضغط **فضاء المرشحين والناتج معًا**:
 
 - المرشحون: بت واحد لكل عدد فردي.
-- إذا احتجنا قائمة النتائج كاملة، تخزن في `array('I')` أو `array('Q')` بدل `list[int]`.
-- إذا لم نحتج إلى الاحتفاظ بجميع النتائج، توفر `iter_primes_retain_packed()` واجهة streaming تنتج الأعداد واحدًا واحدًا.
-
-تشغيل `array` المضغوطة:
+- الناتج الكامل: `array('I')` أو `array('Q')` بدل `list[int]`.
+- عند عدم الحاجة إلى الاحتفاظ بكل النتائج: `iter_primes_retain_packed()` كواجهة streaming.
 
 ```bash
 python retain_prime_packed_output_method.py 100
+python retain_prime_packed_output_method.py 100 --stream
 ```
 
-تشغيل الواجهة المتدفقة:
+التقرير:
+
+**[RESULTS_PACKED_OUTPUT.md](RESULTS_PACKED_OUTPUT.md)**
+
+### `segmented_method.py`
+
+المرحلة التالية للتوسع في `N`: بدل تخصيص bitset لكل الأعداد الفردية حتى `N`، يقسم المجال إلى **مقاطع ثابتة السعة**.
+
+السعة الافتراضية:
+
+```text
+32768 عددًا فرديًا = 4096 bytes للمقطع
+```
+
+في كل مقطع:
+
+- يبقى العدد الأولي ولا يُحذف.
+- تحذف المركبات باستخدام أوليات الأساس حتى `sqrt(N)`.
+- يبدأ شطب `p` من `p²` أو أول مضاعف له داخل المقطع.
+- تكون خطوة الشطب `2p` لأن الزوجيات غير ممثلة.
+- تُخرج النتائج streaming ثم يُتخلص من المقطع.
+
+واجهات الاستخدام:
+
+```python
+iter_primes_segmented(...)
+consume_primes_segmented(...)
+primes_segmented_packed(...)
+```
+
+تشغيل مثال:
 
 ```bash
-python retain_prime_packed_output_method.py 100 --stream
+python segmented_method.py 1000000
+python segmented_method.py 1000000 --segment-odds 32768
 ```
 
 التقرير الرسمي:
 
-**[RESULTS_PACKED_OUTPUT.md](RESULTS_PACKED_OUTPUT.md)**
+**[RESULTS_SEGMENTED.md](RESULTS_SEGMENTED.md)**
 
 ### `optimized_method.py`
 
@@ -108,13 +138,15 @@ python trace_method.py 100
 
 ### `ci_verify.py`
 
-مرجع تحقق مستقل يعتمد القسمة التجريبية حتى `sqrt(n)`، ويقارن جميع التطبيقات بما فيها `array` والـstreaming.
+مرجع تحقق مستقل يعتمد القسمة التجريبية حتى `sqrt(n)`، ويقارن جميع التطبيقات، بما فيها `array` والـstreaming والتجزئة.
 
 ```bash
 python ci_verify.py 4999
 ```
 
 ## المقارنة التجريبية
+
+### المقارنة العامة
 
 `benchmark.py` يقيس:
 
@@ -123,23 +155,22 @@ python ci_verify.py 4999
 - ذروة الذاكرة بواسطة `tracemalloc`.
 - تمثيلات الناتج المختلفة: `list` و`array` وstreaming.
 
-التشغيل الافتراضي:
-
 ```bash
 python benchmark.py
-```
-
-تحديد المجالات وعدد التكرارات:
-
-```bash
 python benchmark.py 1000 10000 100000 1000000 --repeats 5
-```
-
-وحفظ CSV:
-
-```bash
 python benchmark.py 1000 10000 100000 --repeats 5 --csv results.csv
 ```
+
+### مقارنة التجزئة
+
+`benchmark_segmented.py` يقارن **streaming كامل المجال** مع **streaming مجزأ** من دون الاحتفاظ بقائمة ناتج في أي من الطرفين.
+
+```bash
+python benchmark_segmented.py
+python benchmark_segmented.py 100000 1000000 --repeats 5 --segment-odds 32768
+```
+
+ويتحقق من التطابق بواسطة عدد الأوليات ومجموعها وآخر عدد أولي.
 
 ## النتائج الموثقة
 
@@ -148,10 +179,11 @@ python benchmark.py 1000 10000 100000 --repeats 5 --csv results.csv
 - **[RESULTS_GITHUB_ACTIONS.md](RESULTS_GITHUB_ACTIONS.md)** — أول benchmark رسمي على GitHub Actions.
 - **[RESULTS_COMPACT_MEMORY.md](RESULTS_COMPACT_MEMORY.md)** — ضغط فضاء المرشحين إلى بت واحد لكل عدد فردي.
 - **[RESULTS_PACKED_OUTPUT.md](RESULTS_PACKED_OUTPUT.md)** — ضغط الناتج بواسطة `array` واختبار streaming.
+- **[RESULTS_SEGMENTED.md](RESULTS_SEGMENTED.md)** — تقسيم فضاء البحث إلى مقاطع ثابتة ودراسة توسع الذاكرة حتى `N = 10,000,000`.
 
-## خلاصة الذاكرة الحالية
+## خلاصة ضغط الذاكرة عند N = 100000
 
-في Benchmark رسمي على GitHub Actions عند `N = 100000`:
+في Benchmark رسمي على GitHub Actions:
 
 | التمثيل | ذروة الذاكرة |
 |---|---:|
@@ -163,22 +195,34 @@ python benchmark.py 1000 10000 100000 --repeats 5 --csv results.csv
 
 عند هذا الحد، تخزين الناتج في `array` خفض الذاكرة بنحو **87.98%** مقارنة بالنسخة التي تستخدم bitset لكنها تعيد `list[int]`، وبنحو **90.28%** مقارنة بالنسخة المحسنة السابقة.
 
-أما streaming فاقترب من حجم فضاء البحث نفسه، لأن لا توجد حاوية كاملة للناتج.
+## خلاصة التجزئة والتوسع
 
-## نتيجة الأداء الحالية
+بمقاطع سعتها `32768` عددًا فرديًا:
 
-في التشغيل الرسمي نفسه عند `N = 100000`:
+| N | full streaming peak | segmented streaming peak | نسبة full / segmented |
+|---:|---:|---:|---:|
+| 100,000 | 7,787 B | 8,506 B | 0.92× |
+| 1,000,000 | 64,029 B | **10,872 B** | **5.89×** |
+| 10,000,000 | 626,625 B | **12,116 B** | **51.72×** |
 
-| التمثيل | الزمن الوسيط |
-|---|---:|
-| الأصلية | 0.834459 s |
-| `set` | 0.449345 s |
-| bitset + `list[int]` | 0.600430 s |
-| **bitset + `array`** | **0.379683 s** |
-| streaming | 0.384000 s |
-| النسخة المحسنة السابقة | 0.434784 s |
+عند `N = 100000` لا تفيد التجزئة لأن bitset الكامل صغير أصلًا. لكن عند `N = 10000000` خفضت الذاكرة بنحو **98.07%** مقارنة بالـstream الكامل.
 
-في هذا التشغيل أصبحت نسخة `array` المضغوطة الأسرع بين النسخ التي تعيد ناتجًا كاملًا، إضافة إلى كونها الأقل ذاكرة بفارق كبير.
+والأهم: عندما زاد `N` بمقدار `100×` من `100000` إلى `10000000`، زادت ذروة الذاكرة المجزأة فقط من نحو `8.5 KB` إلى `12.1 KB`.
+
+هذه الذاكرة ليست ثابتة رياضيًا بالكامل، لأن أوليات الأساس حتى `sqrt(N)` ما زالت تنمو مع `N`. لكن ذاكرة **فضاء البحث الرئيسي** أصبحت مرتبطة بحجم المقطع بدل `N` كله.
+
+## كلفة الزمن في النسخة المجزأة
+
+التحكم القوي في الذاكرة له كلفة في تطبيق Python الحالي. في القياسات الرسمية كانت التجزئة أبطأ بنحو `1.7×` من streaming الكامل.
+
+عند `N = 10,000,000`، بتكرار واحد لفحص اتجاه التوسع:
+
+```text
+full stream = 46.066240 s
+segmented   = 78.815504 s
+```
+
+الغرض من النسخة المجزأة حاليًا هو **التوسع تحت قيد ذاكرة صغير**، لا تحقيق أفضل زمن ممكن.
 
 ## اختبارات الصحة المحلية
 
@@ -194,6 +238,7 @@ python -m unittest -v
 - صحة تمثيل البتات.
 - صحة `array` المضغوطة.
 - تطابق streaming مع المرجع.
+- عبور حدود مقاطع متعددة في الطريقة المجزأة.
 - أن العدد `1` لا يدخل قائمة الأعداد الأولية.
 
 ## GitHub Actions: المرجع الرسمي للتحقق
@@ -212,7 +257,7 @@ Python 3.13
 
 ### Benchmark
 
-`.github/workflows/benchmark.yml` مسار يدوي (`workflow_dispatch`) يسمح بتحديد حدود `N` وعدد التكرارات. ويسجل بيئة التشغيل والـcommit ويحفظ:
+`.github/workflows/benchmark.yml` مسار يدوي (`workflow_dispatch`) للمقارنة العامة. يسجل بيئة التشغيل والـcommit ويحفظ:
 
 ```text
 benchmark-results.csv
@@ -220,7 +265,23 @@ benchmark-output.txt
 environment.txt
 ```
 
-كـ GitHub Actions artifact لمدة 90 يومًا.
+### Segmented Benchmark
+
+`.github/workflows/segmented-benchmark.yml` مسار يدوي مستقل لدراسة توسع الذاكرة مع التجزئة. يسمح بتحديد:
+
+- حدود `N`.
+- عدد التكرارات.
+- عدد المرشحين الفرديين في كل مقطع.
+
+ويحفظ:
+
+```text
+segmented-results.csv
+segmented-output.txt
+segmented-environment.txt
+```
+
+كـ GitHub Actions artifacts لمدة 90 يومًا.
 
 ## هدف التجربة
 
