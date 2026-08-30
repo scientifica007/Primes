@@ -13,6 +13,8 @@ on:
         required: true
         default: "5"
         type: string
+  push:
+    branches: [main]
 
 permissions:
   contents: read
@@ -51,8 +53,8 @@ jobs:
 
       - name: Run benchmark
         env:
-          LIMITS: ${{ inputs.limits }}
-          REPEATS: ${{ inputs.repeats }}
+          LIMITS: ${{ inputs.limits || '1000 10000 100000' }}
+          REPEATS: ${{ inputs.repeats || '5' }}
         run: |
           python benchmark.py $LIMITS --repeats "$REPEATS" --csv benchmark-results.csv | tee benchmark-output.txt
 
