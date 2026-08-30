@@ -10,6 +10,11 @@ from retain_prime_packed_output_method import (
     iter_primes_retain_packed,
     primes_retain_packed,
 )
+from segmented_method import (
+    consume_primes_segmented,
+    iter_primes_segmented,
+    primes_segmented_packed,
+)
 from trace_method import trace_primes
 
 
@@ -27,6 +32,8 @@ class PrimeSearchTests(unittest.TestCase):
         compact, _ = primes_retain_compact(100)
         packed, _ = primes_retain_packed(100)
         streamed = list(iter_primes_retain_packed(100))
+        segmented = list(iter_primes_segmented(100, segment_odd_count=8))
+        segmented_packed, _ = primes_segmented_packed(100, segment_odd_count=8)
         optimized, _ = primes_optimized(100)
         traced, stages, _, _, _ = trace_primes(100)
 
@@ -35,6 +42,8 @@ class PrimeSearchTests(unittest.TestCase):
         self.assertEqual(compact, EXPECTED_100)
         self.assertEqual(list(packed), EXPECTED_100)
         self.assertEqual(streamed, EXPECTED_100)
+        self.assertEqual(segmented, EXPECTED_100)
+        self.assertEqual(list(segmented_packed), EXPECTED_100)
         self.assertEqual(optimized, EXPECTED_100)
         self.assertEqual(traced, EXPECTED_100)
         self.assertEqual([stage.label for stage in stages], ["ب", "ج", "د", "هـ"])
@@ -62,6 +71,8 @@ class PrimeSearchTests(unittest.TestCase):
                 self.assertEqual(primes_retain_compact(limit)[0], primes)
                 self.assertEqual(list(primes_retain_packed(limit)[0]), primes)
                 self.assertEqual(list(iter_primes_retain_packed(limit)), primes)
+                self.assertEqual(list(iter_primes_segmented(limit, 3)), primes)
+                self.assertEqual(list(primes_segmented_packed(limit, 3)[0]), primes)
                 self.assertEqual(primes_optimized(limit)[0], primes)
                 self.assertEqual(trace_primes(limit)[0], primes)
 
@@ -73,6 +84,7 @@ class PrimeSearchTests(unittest.TestCase):
                 self.assertEqual(original, primes_retain_compact(limit)[0])
                 self.assertEqual(original, list(primes_retain_packed(limit)[0]))
                 self.assertEqual(original, list(iter_primes_retain_packed(limit)))
+                self.assertEqual(original, list(iter_primes_segmented(limit, 17)))
                 self.assertEqual(original, primes_optimized(limit)[0])
                 self.assertEqual(original, trace_primes(limit)[0])
 
@@ -102,10 +114,25 @@ class PrimeSearchTests(unittest.TestCase):
         self.assertIn(stats.output_typecode, ("I", "Q"))
         self.assertEqual(stats.output_itemsize, primes.itemsize)
         self.assertEqual(stats.output_storage_bytes, len(primes) * primes.itemsize)
-        self.assertLess(stats.output_storage_bytes, 25 * 28)  # أقل من int Python المعتاد بكثير
+        self.assertLess(stats.output_storage_bytes, 25 * 28)
 
     def test_streaming_output_matches_without_result_container(self):
         self.assertEqual(list(iter_primes_retain_packed(100)), EXPECTED_100)
+
+    def test_segmented_stream_uses_bounded_segments(self):
+        count, checksum, last, stats = consume_primes_segmented(
+            100, segment_odd_count=8
+        )
+        self.assertEqual(count, len(EXPECTED_100))
+        self.assertEqual(checksum, sum(EXPECTED_100))
+        self.assertEqual(last, 97)
+        self.assertEqual(stats.base_limit, 10)
+        self.assertEqual(stats.base_prime_count, 4)
+        self.assertEqual(stats.segments_processed, 7)
+        self.assertLessEqual(stats.max_segment_odd_count, 8)
+        self.assertLessEqual(stats.max_segment_storage_bytes, 1)
+        self.assertEqual(stats.newly_removed, 25)
+        self.assertEqual(stats.yielded_primes, 25)
 
     def test_trace_preserves_one_but_never_classifies_it(self):
         primes, stages, _, _, list_a = trace_primes(100)
@@ -126,9 +153,23 @@ class PrimeSearchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             list(iter_primes_retain_packed(-1))
         with self.assertRaises(ValueError):
+            list(iter_primes_segmented(-1))
+        with self.assertRaises(ValueError):
+            consume_primes_segmented(-1)
+        with self.assertRaises(ValueError):
+            primes_segmented_packed(-1)
+        with self.assertRaises(ValueError):
             primes_optimized(-1)
         with self.assertRaises(ValueError):
             trace_primes(-1)
+
+    def test_invalid_segment_size_rejected(self):
+        with self.assertRaises(ValueError):
+            list(iter_primes_segmented(100, 0))
+        with self.assertRaises(ValueError):
+            consume_primes_segmented(100, 0)
+        with self.assertRaises(ValueError):
+            primes_segmented_packed(100, 0)
 
 
 if __name__ == "__main__":
