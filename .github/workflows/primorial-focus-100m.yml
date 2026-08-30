@@ -1,0 +1,32 @@
+name: Primorial Focus 100M
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Verify generic wheel
+        run: python -m unittest -v test_primorial_wheel.py
+      - name: Benchmark 210 2310 30030 at 100M
+        run: |
+          python benchmark_primorial_focus.py 100000000 \
+            --segment-candidates 32768 \
+            --csv primorial-focus-results.csv | tee primorial-focus-output.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: primorial-focus-100m-${{ github.run_number }}
+          path: |
+            primorial-focus-results.csv
+            primorial-focus-output.txt
+          retention-days: 90
