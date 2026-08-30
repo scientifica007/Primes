@@ -4,6 +4,7 @@ import unittest
 
 from optimized_method import primes_optimized
 from original_method import primes_original
+from retain_prime_compact_method import primes_retain_compact
 from retain_prime_method import primes_retain
 from trace_method import trace_primes
 
@@ -19,10 +20,12 @@ class PrimeSearchTests(unittest.TestCase):
     def test_known_primes_to_100(self):
         original, _ = primes_original(100)
         retained, _ = primes_retain(100)
+        compact, _ = primes_retain_compact(100)
         optimized, _ = primes_optimized(100)
         traced, stages, _, _, _ = trace_primes(100)
         self.assertEqual(original, EXPECTED_100)
         self.assertEqual(retained, EXPECTED_100)
+        self.assertEqual(compact, EXPECTED_100)
         self.assertEqual(optimized, EXPECTED_100)
         self.assertEqual(traced, EXPECTED_100)
         self.assertEqual([stage.label for stage in stages], ["ب", "ج", "د", "هـ"])
@@ -47,6 +50,7 @@ class PrimeSearchTests(unittest.TestCase):
             with self.subTest(limit=limit):
                 self.assertEqual(primes_original(limit)[0], primes)
                 self.assertEqual(primes_retain(limit)[0], primes)
+                self.assertEqual(primes_retain_compact(limit)[0], primes)
                 self.assertEqual(primes_optimized(limit)[0], primes)
                 self.assertEqual(trace_primes(limit)[0], primes)
 
@@ -55,6 +59,7 @@ class PrimeSearchTests(unittest.TestCase):
             with self.subTest(limit=limit):
                 original = primes_original(limit)[0]
                 self.assertEqual(original, primes_retain(limit)[0])
+                self.assertEqual(original, primes_retain_compact(limit)[0])
                 self.assertEqual(original, primes_optimized(limit)[0])
                 self.assertEqual(original, trace_primes(limit)[0])
 
@@ -63,10 +68,20 @@ class PrimeSearchTests(unittest.TestCase):
         self.assertEqual(primes, EXPECTED_100)
         self.assertEqual(stats.newly_removed, 74)
         self.assertEqual(stats.processed_primes, 4)
-        self.assertNotIn(4, primes)
-        self.assertNotIn(9, primes)
-        self.assertNotIn(25, primes)
-        self.assertNotIn(49, primes)
+        for composite in [4, 9, 25, 49]:
+            self.assertNotIn(composite, primes)
+        for prime in [2, 3, 5, 7]:
+            self.assertIn(prime, primes)
+
+    def test_compact_method_uses_bit_storage(self):
+        primes, stats = primes_retain_compact(100)
+        self.assertEqual(primes, EXPECTED_100)
+        self.assertEqual(stats.represented_odd_candidates, 49)
+        self.assertEqual(stats.storage_bytes, 7)
+        self.assertEqual(stats.processed_primes, 3)
+        self.assertEqual(stats.newly_removed, 25)
+        for composite in [9, 25, 49, 77, 91]:
+            self.assertNotIn(composite, primes)
         for prime in [2, 3, 5, 7]:
             self.assertIn(prime, primes)
 
@@ -82,6 +97,8 @@ class PrimeSearchTests(unittest.TestCase):
             primes_original(-1)
         with self.assertRaises(ValueError):
             primes_retain(-1)
+        with self.assertRaises(ValueError):
+            primes_retain_compact(-1)
         with self.assertRaises(ValueError):
             primes_optimized(-1)
         with self.assertRaises(ValueError):
