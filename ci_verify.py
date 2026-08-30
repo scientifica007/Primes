@@ -19,6 +19,10 @@ from wheel30_segmented_method import (
     iter_primes_wheel30_segmented,
     primes_wheel30_segmented_packed,
 )
+from wheel210_segmented_method import (
+    iter_primes_wheel210_segmented,
+    primes_wheel210_segmented_packed,
+)
 
 
 def reference_primes(limit: int) -> list[int]:
@@ -48,6 +52,10 @@ def verify(limit: int) -> None:
         "wheel30_segmented_stream": list(iter_primes_wheel30_segmented(limit, 257)),
         "wheel30_segmented_packed": list(
             primes_wheel30_segmented_packed(limit, 257)[0]
+        ),
+        "wheel210_segmented_stream": list(iter_primes_wheel210_segmented(limit, 257)),
+        "wheel210_segmented_packed": list(
+            primes_wheel210_segmented_packed(limit, 257)[0]
         ),
         "optimized_method": primes_optimized(limit)[0],
         "trace_method": trace_primes(limit)[0],
