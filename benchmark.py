@@ -1,13 +1,12 @@
-"""مقارنة تجريبية بين أربع طرق للبحث عن الأعداد الأولية.
+"""مقارنة تجريبية بين تمثيلات مختلفة لمنهج البحث عن الأعداد الأولية.
 
-الطرق:
-1. original_method.py: الصياغة الأصلية القائمة على إنشاء القوائم وطرح المضاعفات.
-2. retain_prime_method.py: إبقاء العدد الأولي باستخدام set.
-3. retain_prime_compact_method.py: الفكرة نفسها ببت واحد لكل مرشح فردي.
-4. optimized_method.py: غربال محسن يعتمد bytearray ويبدأ من p^2.
-
-يقيس البرنامج زمن التنفيذ وذروة الذاكرة بواسطة tracemalloc، ويتحقق من أن الطرق
-كلها تنتج قائمة الأعداد الأولية نفسها. عند repeats > 1 يُستخدم وسيط القياسات.
+تقيس المقارنة الزمن وذروة الذاكرة بواسطة tracemalloc، وتشمل:
+1. الصياغة الأصلية.
+2. إبقاء العدد الأولي باستخدام set.
+3. فضاء مرشحين مضغوط مع list Python كناتج.
+4. فضاء مرشحين مضغوط مع array مضغوطة كناتج.
+5. واجهة streaming لا تحتفظ بقائمة الناتج.
+6. الغربال المحسن المعتمد على bytearray.
 """
 
 from __future__ import annotations
@@ -20,15 +19,19 @@ import sys
 import time
 import tracemalloc
 from dataclasses import asdict
-from typing import Callable, Iterable, Tuple
+from typing import Callable, Iterable, Sequence, Tuple
 
 from optimized_method import primes_optimized
 from original_method import primes_original
 from retain_prime_compact_method import primes_retain_compact
 from retain_prime_method import primes_retain
+from retain_prime_packed_output_method import (
+    iter_primes_retain_packed,
+    primes_retain_packed,
+)
 
 
-PrimeFunction = Callable[[int], Tuple[list[int], object]]
+PrimeFunction = Callable[[int], Tuple[Sequence[int], object]]
 
 
 def measure(fn: PrimeFunction, limit: int, repeats: int = 5) -> dict:
@@ -37,7 +40,7 @@ def measure(fn: PrimeFunction, limit: int, repeats: int = 5) -> dict:
 
     elapsed_samples = []
     peak_samples = []
-    last_primes = []
+    last_primes: Sequence[int] = []
     last_stats = None
 
     for _ in range(repeats):
@@ -64,6 +67,50 @@ def measure(fn: PrimeFunction, limit: int, repeats: int = 5) -> dict:
     }
 
 
+def same_values(reference: Sequence[int], candidate: Sequence[int]) -> bool:
+    """مقارنة تسلسلين دون تحويل array إلى list إضافية."""
+    if len(reference) != len(candidate):
+        return False
+    return all(a == b for a, b in zip(reference, candidate))
+
+
+def measure_stream(limit: int, expected: Sequence[int], repeats: int = 5) -> dict:
+    """قياس التوليد المتدفق دون الاحتفاظ بقائمة ناتج داخل فترة القياس."""
+    elapsed_samples = []
+    peak_samples = []
+    last_count = 0
+
+    for _ in range(repeats):
+        gc.collect()
+        tracemalloc.start()
+        start = time.perf_counter()
+
+        count = 0
+        for count, prime in enumerate(iter_primes_retain_packed(limit), start=1):
+            index = count - 1
+            if index >= len(expected) or prime != expected[index]:
+                tracemalloc.stop()
+                raise AssertionError(f"Streaming output differs for limit={limit}")
+
+        if count != len(expected):
+            tracemalloc.stop()
+            raise AssertionError(f"Streaming output length differs for limit={limit}")
+
+        elapsed = time.perf_counter() - start
+        _, peak = tracemalloc.get_traced_memory()
+        tracemalloc.stop()
+
+        elapsed_samples.append(elapsed)
+        peak_samples.append(peak)
+        last_count = count
+
+    return {
+        "prime_count": last_count,
+        "elapsed_seconds": statistics.median(elapsed_samples),
+        "peak_memory_bytes": int(statistics.median(peak_samples)),
+    }
+
+
 def run_benchmark(
     limits: Iterable[int], csv_path: str | None = None, repeats: int = 5
 ) -> None:
@@ -73,15 +120,20 @@ def run_benchmark(
         original = measure(primes_original, limit, repeats)
         retained = measure(primes_retain, limit, repeats)
         compact = measure(primes_retain_compact, limit, repeats)
+        packed = measure(primes_retain_packed, limit, repeats)
         optimized = measure(primes_optimized, limit, repeats)
 
-        if not (
-            original["primes"]
-            == retained["primes"]
-            == compact["primes"]
-            == optimized["primes"]
+        reference = original["primes"]
+        for name, result in (
+            ("retained", retained),
+            ("compact", compact),
+            ("packed", packed),
+            ("optimized", optimized),
         ):
-            raise AssertionError(f"Different prime lists for limit={limit}")
+            if not same_values(reference, result["primes"]):
+                raise AssertionError(f"{name} differs for limit={limit}")
+
+        stream = measure_stream(limit, reference, repeats)
 
         def speedup(base: dict, candidate: dict) -> float:
             if candidate["elapsed_seconds"] <= 0:
@@ -94,13 +146,18 @@ def run_benchmark(
             "original_seconds": original["elapsed_seconds"],
             "retained_seconds": retained["elapsed_seconds"],
             "compact_seconds": compact["elapsed_seconds"],
+            "packed_seconds": packed["elapsed_seconds"],
+            "stream_seconds": stream["elapsed_seconds"],
             "optimized_seconds": optimized["elapsed_seconds"],
             "original_to_retained_speedup": speedup(original, retained),
             "original_to_compact_speedup": speedup(original, compact),
+            "original_to_packed_speedup": speedup(original, packed),
             "original_to_optimized_speedup": speedup(original, optimized),
             "original_peak_bytes": original["peak_memory_bytes"],
             "retained_peak_bytes": retained["peak_memory_bytes"],
             "compact_peak_bytes": compact["peak_memory_bytes"],
+            "packed_peak_bytes": packed["peak_memory_bytes"],
+            "stream_peak_bytes": stream["peak_memory_bytes"],
             "optimized_peak_bytes": optimized["peak_memory_bytes"],
         }
         rows.append(row)
@@ -110,13 +167,17 @@ def run_benchmark(
         print(f"  original : {row['original_seconds']:.6f} s | peak={row['original_peak_bytes']:,} B")
         print(f"  retained : {row['retained_seconds']:.6f} s | peak={row['retained_peak_bytes']:,} B")
         print(f"  compact  : {row['compact_seconds']:.6f} s | peak={row['compact_peak_bytes']:,} B")
+        print(f"  packed   : {row['packed_seconds']:.6f} s | peak={row['packed_peak_bytes']:,} B")
+        print(f"  stream   : {row['stream_seconds']:.6f} s | peak={row['stream_peak_bytes']:,} B")
         print(f"  optimized: {row['optimized_seconds']:.6f} s | peak={row['optimized_peak_bytes']:,} B")
         print(f"  original / retained speedup : {row['original_to_retained_speedup']:.2f}x")
         print(f"  original / compact speedup  : {row['original_to_compact_speedup']:.2f}x")
+        print(f"  original / packed speedup   : {row['original_to_packed_speedup']:.2f}x")
         print(f"  original / optimized speedup: {row['original_to_optimized_speedup']:.2f}x")
         print(f"  original stats : {original['stats']}")
         print(f"  retained stats : {retained['stats']}")
         print(f"  compact stats  : {compact['stats']}")
+        print(f"  packed stats   : {packed['stats']}")
         print(f"  optimized stats: {optimized['stats']}")
         print()
 
@@ -130,7 +191,7 @@ def run_benchmark(
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description="Benchmark the four prime-search methods")
+    parser = argparse.ArgumentParser(description="Benchmark prime-search representations")
     parser.add_argument(
         "limits",
         type=int,
