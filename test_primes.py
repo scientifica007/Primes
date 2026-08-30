@@ -16,6 +16,11 @@ from segmented_method import (
     primes_segmented_packed,
 )
 from trace_method import trace_primes
+from wheel30_segmented_method import (
+    consume_primes_wheel30_segmented,
+    iter_primes_wheel30_segmented,
+    primes_wheel30_segmented_packed,
+)
 
 
 EXPECTED_100 = [
@@ -34,6 +39,10 @@ class PrimeSearchTests(unittest.TestCase):
         streamed = list(iter_primes_retain_packed(100))
         segmented = list(iter_primes_segmented(100, segment_odd_count=8))
         segmented_packed, _ = primes_segmented_packed(100, segment_odd_count=8)
+        wheel30 = list(iter_primes_wheel30_segmented(100, segment_candidate_count=5))
+        wheel30_packed, _ = primes_wheel30_segmented_packed(
+            100, segment_candidate_count=5
+        )
         optimized, _ = primes_optimized(100)
         traced, stages, _, _, _ = trace_primes(100)
 
@@ -44,6 +53,8 @@ class PrimeSearchTests(unittest.TestCase):
         self.assertEqual(streamed, EXPECTED_100)
         self.assertEqual(segmented, EXPECTED_100)
         self.assertEqual(list(segmented_packed), EXPECTED_100)
+        self.assertEqual(wheel30, EXPECTED_100)
+        self.assertEqual(list(wheel30_packed), EXPECTED_100)
         self.assertEqual(optimized, EXPECTED_100)
         self.assertEqual(traced, EXPECTED_100)
         self.assertEqual([stage.label for stage in stages], ["ب", "ج", "د", "هـ"])
@@ -73,6 +84,10 @@ class PrimeSearchTests(unittest.TestCase):
                 self.assertEqual(list(iter_primes_retain_packed(limit)), primes)
                 self.assertEqual(list(iter_primes_segmented(limit, 3)), primes)
                 self.assertEqual(list(primes_segmented_packed(limit, 3)[0]), primes)
+                self.assertEqual(list(iter_primes_wheel30_segmented(limit, 3)), primes)
+                self.assertEqual(
+                    list(primes_wheel30_segmented_packed(limit, 3)[0]), primes
+                )
                 self.assertEqual(primes_optimized(limit)[0], primes)
                 self.assertEqual(trace_primes(limit)[0], primes)
 
@@ -85,6 +100,9 @@ class PrimeSearchTests(unittest.TestCase):
                 self.assertEqual(original, list(primes_retain_packed(limit)[0]))
                 self.assertEqual(original, list(iter_primes_retain_packed(limit)))
                 self.assertEqual(original, list(iter_primes_segmented(limit, 17)))
+                self.assertEqual(
+                    original, list(iter_primes_wheel30_segmented(limit, 11))
+                )
                 self.assertEqual(original, primes_optimized(limit)[0])
                 self.assertEqual(original, trace_primes(limit)[0])
 
@@ -134,6 +152,23 @@ class PrimeSearchTests(unittest.TestCase):
         self.assertEqual(stats.newly_removed, 25)
         self.assertEqual(stats.yielded_primes, 25)
 
+    def test_wheel30_represents_only_coprime_candidates(self):
+        count, checksum, last, stats = consume_primes_wheel30_segmented(
+            100, segment_candidate_count=8
+        )
+        self.assertEqual(count, len(EXPECTED_100))
+        self.assertEqual(checksum, sum(EXPECTED_100))
+        self.assertEqual(last, 97)
+        self.assertEqual(stats.base_limit, 10)
+        self.assertEqual(stats.base_prime_count, 4)
+        self.assertEqual(stats.represented_candidates, 25)
+        self.assertEqual(stats.segments_processed, 4)
+        self.assertLessEqual(stats.max_segment_candidate_count, 8)
+        self.assertLessEqual(stats.max_segment_storage_bytes, 1)
+        self.assertEqual(stats.strike_attempts, 3)
+        self.assertEqual(stats.newly_removed, 3)
+        self.assertEqual(stats.yielded_primes, 25)
+
     def test_trace_preserves_one_but_never_classifies_it(self):
         primes, stages, _, _, list_a = trace_primes(100)
         self.assertIn(1, list_a)
@@ -159,6 +194,12 @@ class PrimeSearchTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             primes_segmented_packed(-1)
         with self.assertRaises(ValueError):
+            list(iter_primes_wheel30_segmented(-1))
+        with self.assertRaises(ValueError):
+            consume_primes_wheel30_segmented(-1)
+        with self.assertRaises(ValueError):
+            primes_wheel30_segmented_packed(-1)
+        with self.assertRaises(ValueError):
             primes_optimized(-1)
         with self.assertRaises(ValueError):
             trace_primes(-1)
@@ -170,6 +211,12 @@ class PrimeSearchTests(unittest.TestCase):
             consume_primes_segmented(100, 0)
         with self.assertRaises(ValueError):
             primes_segmented_packed(100, 0)
+        with self.assertRaises(ValueError):
+            list(iter_primes_wheel30_segmented(100, 0))
+        with self.assertRaises(ValueError):
+            consume_primes_wheel30_segmented(100, 0)
+        with self.assertRaises(ValueError):
+            primes_wheel30_segmented_packed(100, 0)
 
 
 if __name__ == "__main__":
