@@ -11,6 +11,7 @@ from math import isqrt
 
 from optimized_method import primes_optimized
 from original_method import primes_original
+from retain_prime_compact_method import primes_retain_compact
 from retain_prime_method import primes_retain
 from trace_method import trace_primes
 
@@ -32,16 +33,12 @@ def reference_primes(limit: int) -> list[int]:
 def verify(limit: int) -> None:
     expected = reference_primes(limit)
 
-    original = primes_original(limit)[0]
-    retain = primes_retain(limit)[0]
-    optimized = primes_optimized(limit)[0]
-    traced = trace_primes(limit)[0]
-
     results = {
-        "original_method": original,
-        "retain_prime_method": retain,
-        "optimized_method": optimized,
-        "trace_method": traced,
+        "original_method": primes_original(limit)[0],
+        "retain_prime_method": primes_retain(limit)[0],
+        "retain_prime_compact_method": primes_retain_compact(limit)[0],
+        "optimized_method": primes_optimized(limit)[0],
+        "trace_method": trace_primes(limit)[0],
     }
 
     for name, actual in results.items():
