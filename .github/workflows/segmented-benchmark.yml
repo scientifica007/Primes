@@ -18,8 +18,6 @@ on:
         required: true
         default: "32768"
         type: string
-  push:
-    branches: [main]
 
 permissions:
   contents: read
@@ -57,9 +55,9 @@ jobs:
 
       - name: Run segmented benchmark
         env:
-          LIMITS: ${{ inputs.limits || '10000000' }}
-          REPEATS: ${{ inputs.repeats || '1' }}
-          SEGMENT_ODDS: ${{ inputs.segment_odds || '32768' }}
+          LIMITS: ${{ inputs.limits }}
+          REPEATS: ${{ inputs.repeats }}
+          SEGMENT_ODDS: ${{ inputs.segment_odds }}
         run: |
           python benchmark_segmented.py $LIMITS \
             --repeats "$REPEATS" \
