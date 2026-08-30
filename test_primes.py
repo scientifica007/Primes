@@ -4,6 +4,7 @@ import unittest
 
 from optimized_method import primes_optimized
 from original_method import primes_original
+from retain_prime_method import primes_retain
 from trace_method import trace_primes
 
 
@@ -17,9 +18,11 @@ EXPECTED_100 = [
 class PrimeSearchTests(unittest.TestCase):
     def test_known_primes_to_100(self):
         original, _ = primes_original(100)
+        retained, _ = primes_retain(100)
         optimized, _ = primes_optimized(100)
         traced, stages, _, _, _ = trace_primes(100)
         self.assertEqual(original, EXPECTED_100)
+        self.assertEqual(retained, EXPECTED_100)
         self.assertEqual(optimized, EXPECTED_100)
         self.assertEqual(traced, EXPECTED_100)
         self.assertEqual([stage.label for stage in stages], ["ب", "ج", "د", "هـ"])
@@ -43,6 +46,7 @@ class PrimeSearchTests(unittest.TestCase):
         for limit, primes in expected.items():
             with self.subTest(limit=limit):
                 self.assertEqual(primes_original(limit)[0], primes)
+                self.assertEqual(primes_retain(limit)[0], primes)
                 self.assertEqual(primes_optimized(limit)[0], primes)
                 self.assertEqual(trace_primes(limit)[0], primes)
 
@@ -50,8 +54,21 @@ class PrimeSearchTests(unittest.TestCase):
         for limit in range(0, 501):
             with self.subTest(limit=limit):
                 original = primes_original(limit)[0]
+                self.assertEqual(original, primes_retain(limit)[0])
                 self.assertEqual(original, primes_optimized(limit)[0])
                 self.assertEqual(original, trace_primes(limit)[0])
+
+    def test_retain_method_removes_only_composites(self):
+        primes, stats = primes_retain(100)
+        self.assertEqual(primes, EXPECTED_100)
+        self.assertEqual(stats.newly_removed, 74)
+        self.assertEqual(stats.processed_primes, 4)
+        self.assertNotIn(4, primes)
+        self.assertNotIn(9, primes)
+        self.assertNotIn(25, primes)
+        self.assertNotIn(49, primes)
+        for prime in [2, 3, 5, 7]:
+            self.assertIn(prime, primes)
 
     def test_trace_preserves_one_but_never_classifies_it(self):
         primes, stages, _, _, list_a = trace_primes(100)
@@ -63,6 +80,8 @@ class PrimeSearchTests(unittest.TestCase):
     def test_negative_limit_rejected(self):
         with self.assertRaises(ValueError):
             primes_original(-1)
+        with self.assertRaises(ValueError):
+            primes_retain(-1)
         with self.assertRaises(ValueError):
             primes_optimized(-1)
         with self.assertRaises(ValueError):
