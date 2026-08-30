@@ -15,6 +15,10 @@ from retain_prime_packed_output_method import (
 )
 from segmented_method import iter_primes_segmented, primes_segmented_packed
 from trace_method import trace_primes
+from wheel30_segmented_method import (
+    iter_primes_wheel30_segmented,
+    primes_wheel30_segmented_packed,
+)
 
 
 def reference_primes(limit: int) -> list[int]:
@@ -41,6 +45,10 @@ def verify(limit: int) -> None:
         "retain_prime_stream": list(iter_primes_retain_packed(limit)),
         "segmented_stream": list(iter_primes_segmented(limit, 257)),
         "segmented_packed": list(primes_segmented_packed(limit, 257)[0]),
+        "wheel30_segmented_stream": list(iter_primes_wheel30_segmented(limit, 257)),
+        "wheel30_segmented_packed": list(
+            primes_wheel30_segmented_packed(limit, 257)[0]
+        ),
         "optimized_method": primes_optimized(limit)[0],
         "trace_method": trace_primes(limit)[0],
     }
