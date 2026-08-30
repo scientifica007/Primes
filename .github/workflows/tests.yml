@@ -1,0 +1,45 @@
+name: Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Show environment
+        run: |
+          python --version
+          uname -a
+          echo "Commit: $GITHUB_SHA"
+
+      - name: Compile Python files
+        run: python -m compileall -q .
+
+      - name: Run unit tests
+        run: python -m unittest -v
+
+      - name: Independent verification to 4,999
+        run: python ci_verify.py 4999
