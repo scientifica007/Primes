@@ -1,4 +1,4 @@
-"""اختبارات صحة للنسخ والتتبع التعليمي."""
+"""اختبارات صحة للنسخ وتمثيلات الناتج والتتبع التعليمي."""
 
 import unittest
 
@@ -6,6 +6,10 @@ from optimized_method import primes_optimized
 from original_method import primes_original
 from retain_prime_compact_method import primes_retain_compact
 from retain_prime_method import primes_retain
+from retain_prime_packed_output_method import (
+    iter_primes_retain_packed,
+    primes_retain_packed,
+)
 from trace_method import trace_primes
 
 
@@ -21,11 +25,16 @@ class PrimeSearchTests(unittest.TestCase):
         original, _ = primes_original(100)
         retained, _ = primes_retain(100)
         compact, _ = primes_retain_compact(100)
+        packed, _ = primes_retain_packed(100)
+        streamed = list(iter_primes_retain_packed(100))
         optimized, _ = primes_optimized(100)
         traced, stages, _, _, _ = trace_primes(100)
+
         self.assertEqual(original, EXPECTED_100)
         self.assertEqual(retained, EXPECTED_100)
         self.assertEqual(compact, EXPECTED_100)
+        self.assertEqual(list(packed), EXPECTED_100)
+        self.assertEqual(streamed, EXPECTED_100)
         self.assertEqual(optimized, EXPECTED_100)
         self.assertEqual(traced, EXPECTED_100)
         self.assertEqual([stage.label for stage in stages], ["ب", "ج", "د", "هـ"])
@@ -51,6 +60,8 @@ class PrimeSearchTests(unittest.TestCase):
                 self.assertEqual(primes_original(limit)[0], primes)
                 self.assertEqual(primes_retain(limit)[0], primes)
                 self.assertEqual(primes_retain_compact(limit)[0], primes)
+                self.assertEqual(list(primes_retain_packed(limit)[0]), primes)
+                self.assertEqual(list(iter_primes_retain_packed(limit)), primes)
                 self.assertEqual(primes_optimized(limit)[0], primes)
                 self.assertEqual(trace_primes(limit)[0], primes)
 
@@ -60,6 +71,8 @@ class PrimeSearchTests(unittest.TestCase):
                 original = primes_original(limit)[0]
                 self.assertEqual(original, primes_retain(limit)[0])
                 self.assertEqual(original, primes_retain_compact(limit)[0])
+                self.assertEqual(original, list(primes_retain_packed(limit)[0]))
+                self.assertEqual(original, list(iter_primes_retain_packed(limit)))
                 self.assertEqual(original, primes_optimized(limit)[0])
                 self.assertEqual(original, trace_primes(limit)[0])
 
@@ -80,10 +93,19 @@ class PrimeSearchTests(unittest.TestCase):
         self.assertEqual(stats.storage_bytes, 7)
         self.assertEqual(stats.processed_primes, 3)
         self.assertEqual(stats.newly_removed, 25)
-        for composite in [9, 25, 49, 77, 91]:
-            self.assertNotIn(composite, primes)
-        for prime in [2, 3, 5, 7]:
-            self.assertIn(prime, primes)
+
+    def test_packed_output_compresses_result(self):
+        primes, stats = primes_retain_packed(100)
+        self.assertEqual(list(primes), EXPECTED_100)
+        self.assertEqual(stats.represented_odd_candidates, 49)
+        self.assertEqual(stats.candidate_storage_bytes, 7)
+        self.assertIn(stats.output_typecode, ("I", "Q"))
+        self.assertEqual(stats.output_itemsize, primes.itemsize)
+        self.assertEqual(stats.output_storage_bytes, len(primes) * primes.itemsize)
+        self.assertLess(stats.output_storage_bytes, 25 * 28)  # أقل من int Python المعتاد بكثير
+
+    def test_streaming_output_matches_without_result_container(self):
+        self.assertEqual(list(iter_primes_retain_packed(100)), EXPECTED_100)
 
     def test_trace_preserves_one_but_never_classifies_it(self):
         primes, stages, _, _, list_a = trace_primes(100)
@@ -99,6 +121,10 @@ class PrimeSearchTests(unittest.TestCase):
             primes_retain(-1)
         with self.assertRaises(ValueError):
             primes_retain_compact(-1)
+        with self.assertRaises(ValueError):
+            primes_retain_packed(-1)
+        with self.assertRaises(ValueError):
+            list(iter_primes_retain_packed(-1))
         with self.assertRaises(ValueError):
             primes_optimized(-1)
         with self.assertRaises(ValueError):
