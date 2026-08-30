@@ -1,0 +1,101 @@
+name: Compact Wheel Cache Study
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Upper limit N for cache sweep"
+        required: true
+        default: "100000000"
+        type: string
+      repeats:
+        description: "Timing repeats per configuration"
+        required: true
+        default: "2"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Record CPU and cache environment
+        run: |
+          {
+            echo "Repository: $GITHUB_REPOSITORY"
+            echo "Commit: $GITHUB_SHA"
+            echo "Runner: $RUNNER_OS $RUNNER_ARCH"
+            python --version
+            uname -a
+            echo
+            echo "--- lscpu ---"
+            lscpu
+            echo
+            echo "--- cache lines ---"
+            lscpu | grep -E 'L1d cache|L1i cache|L2 cache|L3 cache|CPU\(s\)' || true
+          } | tee compact-cache-environment.txt
+
+      - name: Unit tests for compact wheel
+        run: python -m unittest -v test_compact_primorial_wheel.py
+
+      - name: Smoke benchmark
+        run: |
+          python benchmark_compact_cache_wheels.py 100000 \
+            --segment-bytes 4096,32768 \
+            --repeats 1 \
+            --legacy-limit 100000 \
+            --csv smoke-sweep.csv \
+            --best-csv smoke-best.csv \
+            --legacy-csv smoke-legacy.csv
+
+      - name: Full cache-size sweep
+        env:
+          LIMIT: ${{ inputs.limit || '100000000' }}
+          REPEATS: ${{ inputs.repeats || '2' }}
+        run: |
+          python benchmark_compact_cache_wheels.py "$LIMIT" \
+            --segment-bytes 4096,8192,16384,32768,65536,131072,262144,524288,1048576 \
+            --repeats "$REPEATS" \
+            --legacy-limit 10000000 \
+            --legacy-segment-bytes 4096 \
+            --csv compact-cache-sweep.csv \
+            --best-csv compact-cache-best.csv \
+            --legacy-csv compact-vs-legacy.csv | tee compact-cache-output.txt
+
+      - name: Add benchmark summary
+        run: |
+          {
+            echo "## Compact wheel cache study"
+            echo
+            echo "**Commit:** \`$GITHUB_SHA\`"
+            echo
+            echo '```text'
+            cat compact-cache-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload results
+        uses: actions/upload-artifact@v4
+        with:
+          name: compact-wheel-cache-study-${{ github.run_number }}
+          path: |
+            compact-cache-sweep.csv
+            compact-cache-best.csv
+            compact-vs-legacy.csv
+            compact-cache-output.txt
+            compact-cache-environment.txt
+          retention-days: 90
