@@ -13,8 +13,6 @@ on:
         required: true
         default: "200000"
         type: string
-  push:
-    branches: [main]
 
 permissions:
   contents: read
