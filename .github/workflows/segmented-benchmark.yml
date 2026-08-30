@@ -57,8 +57,8 @@ jobs:
 
       - name: Run segmented benchmark
         env:
-          LIMITS: ${{ inputs.limits || '100000 1000000' }}
-          REPEATS: ${{ inputs.repeats || '5' }}
+          LIMITS: ${{ inputs.limits || '10000000' }}
+          REPEATS: ${{ inputs.repeats || '1' }}
           SEGMENT_ODDS: ${{ inputs.segment_odds || '32768' }}
         run: |
           python benchmark_segmented.py $LIMITS \
