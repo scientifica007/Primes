@@ -1,0 +1,48 @@
+name: Primorial Wheel Benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Upper limit N"
+        required: true
+        default: "10000000"
+        type: string
+      segment_candidates:
+        description: "Candidate bits per segment"
+        required: true
+        default: "32768"
+        type: string
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Unit smoke check
+        run: python -m unittest -v test_primorial_wheel.py
+      - name: Run benchmark
+        env:
+          LIMIT: ${{ inputs.limit || '10000000' }}
+          SEGMENT: ${{ inputs.segment_candidates || '32768' }}
+        run: |
+          python benchmark_primorial_wheels.py "$LIMIT" \
+            --segment-candidates "$SEGMENT" \
+            --csv primorial-wheel-results.csv | tee primorial-wheel-output.txt
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: primorial-wheel-benchmark-${{ github.run_number }}
+          path: |
+            primorial-wheel-results.csv
+            primorial-wheel-output.txt
+          retention-days: 90
