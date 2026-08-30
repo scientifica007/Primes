@@ -1,0 +1,89 @@
+name: Segmented Benchmark
+
+on:
+  workflow_dispatch:
+    inputs:
+      limits:
+        description: "Upper limits separated by spaces"
+        required: true
+        default: "100000 1000000"
+        type: string
+      repeats:
+        description: "Repetitions per method and limit"
+        required: true
+        default: "5"
+        type: string
+      segment_odds:
+        description: "Odd candidates represented per segment"
+        required: true
+        default: "32768"
+        type: string
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  segmented-benchmark:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Record environment
+        run: |
+          {
+            echo "Repository: $GITHUB_REPOSITORY"
+            echo "Commit: $GITHUB_SHA"
+            echo "Ref: $GITHUB_REF"
+            echo "Runner OS: $RUNNER_OS"
+            echo "Runner arch: $RUNNER_ARCH"
+            python --version
+            uname -a
+            echo
+            lscpu
+          } | tee segmented-environment.txt
+
+      - name: Run independent verification
+        run: python ci_verify.py 4999
+
+      - name: Run segmented benchmark
+        env:
+          LIMITS: ${{ inputs.limits || '100000 1000000' }}
+          REPEATS: ${{ inputs.repeats || '5' }}
+          SEGMENT_ODDS: ${{ inputs.segment_odds || '32768' }}
+        run: |
+          python benchmark_segmented.py $LIMITS \
+            --repeats "$REPEATS" \
+            --segment-odds "$SEGMENT_ODDS" \
+            --csv segmented-results.csv | tee segmented-output.txt
+
+      - name: Add results to summary
+        run: |
+          {
+            echo "## Segmented prime-search benchmark"
+            echo
+            echo "**Commit:** \`$GITHUB_SHA\`"
+            echo
+            echo '```text'
+            cat segmented-output.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Upload segmented benchmark artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: segmented-prime-benchmark-${{ github.run_number }}
+          path: |
+            segmented-results.csv
+            segmented-output.txt
+            segmented-environment.txt
+          retention-days: 90
