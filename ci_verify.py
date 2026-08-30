@@ -13,6 +13,7 @@ from retain_prime_packed_output_method import (
     iter_primes_retain_packed,
     primes_retain_packed,
 )
+from segmented_method import iter_primes_segmented, primes_segmented_packed
 from trace_method import trace_primes
 
 
@@ -38,6 +39,8 @@ def verify(limit: int) -> None:
         "retain_prime_compact_method": primes_retain_compact(limit)[0],
         "retain_prime_packed_output_method": list(primes_retain_packed(limit)[0]),
         "retain_prime_stream": list(iter_primes_retain_packed(limit)),
+        "segmented_stream": list(iter_primes_segmented(limit, 257)),
+        "segmented_packed": list(primes_segmented_packed(limit, 257)[0]),
         "optimized_method": primes_optimized(limit)[0],
         "trace_method": trace_primes(limit)[0],
     }
