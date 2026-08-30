@@ -159,6 +159,10 @@ python benchmark.py 1000 10000 100000 --repeats 5 --csv results.csv
 
 **[RESULTS_RETAIN_PRIME.md](RESULTS_RETAIN_PRIME.md)**
 
+وأول benchmark رسمي نُفذ بالكامل داخل GitHub Actions، مع بيئة التشغيل والـcommit والنتائج، موثق في:
+
+**[RESULTS_GITHUB_ACTIONS.md](RESULTS_GITHUB_ACTIONS.md)**
+
 ## اختبارات الصحة المحلية
 
 ```bash
