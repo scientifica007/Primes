@@ -1,8 +1,4 @@
-"""تحقق مستقل وموسع مناسب للتشغيل داخل GitHub Actions.
-
-يقارن تطبيقات المشروع مع مرجع بسيط يعتمد القسمة التجريبية حتى الجذر التربيعي.
-لا يُستخدم هذا المرجع للأداء؛ دوره التحقق من صحة الناتج فقط.
-"""
+"""تحقق مستقل وموسع مناسب للتشغيل داخل GitHub Actions."""
 
 from __future__ import annotations
 
@@ -13,11 +9,14 @@ from optimized_method import primes_optimized
 from original_method import primes_original
 from retain_prime_compact_method import primes_retain_compact
 from retain_prime_method import primes_retain
+from retain_prime_packed_output_method import (
+    iter_primes_retain_packed,
+    primes_retain_packed,
+)
 from trace_method import trace_primes
 
 
 def reference_primes(limit: int) -> list[int]:
-    """إرجاع الأعداد الأولية <= limit بطريقة مستقلة وبسيطة."""
     result: list[int] = []
     for n in range(2, limit + 1):
         prime = True
@@ -37,6 +36,8 @@ def verify(limit: int) -> None:
         "original_method": primes_original(limit)[0],
         "retain_prime_method": primes_retain(limit)[0],
         "retain_prime_compact_method": primes_retain_compact(limit)[0],
+        "retain_prime_packed_output_method": list(primes_retain_packed(limit)[0]),
+        "retain_prime_stream": list(iter_primes_retain_packed(limit)),
         "optimized_method": primes_optimized(limit)[0],
         "trace_method": trace_primes(limit)[0],
     }
