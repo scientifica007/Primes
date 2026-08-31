@@ -1,0 +1,8 @@
+metric,observed,monte_carlo_p_value
+sample_intervals,450.0,
+wheel_cutoff_q,997.0,
+dispersion_ratio_R,0.9894240625461599,0.870882582348353
+lag1_autocorrelation,-0.12426651327735908,0.008539829203415932
+runs_count,256.0,0.004579908401831963
+prime_fraction_among_survivors,0.708124709137641,
+max_conditional_probability,0.7575500978247327,
