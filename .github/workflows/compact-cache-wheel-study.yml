@@ -1,8 +1,6 @@
 name: Compact Wheel Cache Study
 
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
     inputs:
       limit:
