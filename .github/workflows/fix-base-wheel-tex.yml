@@ -14,21 +14,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: experiment/p2-plus-1-patterns
-      - name: Fix accidental literal backslash-n sequences
+      - name: Normalize text after display-math blocks
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           p = Path('experiments/BASE_WHEEL_Q7919_SWEEP_STUDY.tex')
           s = p.read_text(encoding='utf-8')
-          s = s.replace(r'\nيعطي:', 'يعطي:')
-          s = s.replace(r'\nيصبح', 'يصبح')
-          s = s.replace(r'\nبدل:', 'بدل:')
-          p.write_text(s, encoding='utf-8')
+          pattern = r'\\\](?:(?:\\n)|\s)*(?=(?:يعطي:|يصبح|بدل:))'
+          s2, n = re.subn(pattern, lambda m: "\\]\n", s)
+          print('replacements:', n)
+          p.write_text(s2, encoding='utf-8')
           PY
       - name: Commit fix
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add experiments/BASE_WHEEL_Q7919_SWEEP_STUDY.tex
-          git diff --cached --quiet || git commit -m "fix: correct LaTeX line breaks in base-wheel report"
+          git diff --cached --quiet || git commit -m "fix: normalize LaTeX line breaks in base-wheel report"
           git push
