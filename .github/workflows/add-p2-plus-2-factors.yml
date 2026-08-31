@@ -1,0 +1,74 @@
+name: Add p2 plus 2 factors
+
+on:
+  push:
+    branches:
+      - experiment/p2-plus-1-patterns
+    paths:
+      - .github/workflows/add-p2-plus-2-factors.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/p2-plus-1-patterns
+
+      - name: Add distinct prime factors of p^2 + 2
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          def distinct_prime_factors(n):
+              factors = []
+              x = n
+              d = 2
+              while d * d <= x:
+                  if x % d == 0:
+                      factors.append(d)
+                      while x % d == 0:
+                          x //= d
+                  d = 3 if d == 2 else d + 2
+              if x > 1:
+                  factors.append(x)
+              return factors
+
+          path = Path('experiments/first_1000_prime_square_plus_one.csv')
+          with path.open('r', encoding='utf-8-sig', newline='') as f:
+              rows = list(csv.reader(f))
+
+          if not rows:
+              raise SystemExit('CSV is empty')
+
+          header = rows[0]
+          col = 'المكونات الأساسية لـ p² + 2'
+          if col not in header:
+              header.append(col)
+              for row in rows[1:]:
+                  if not row:
+                      continue
+                  n = int(row[5])
+                  factors = distinct_prime_factors(n)
+                  row.append('(' + '، '.join(map(str, factors)) + ')')
+
+          with path.open('w', encoding='utf-8-sig', newline='') as f:
+              writer = csv.writer(f, lineterminator='\n')
+              writer.writerows(rows)
+          PY
+
+      - name: Commit updated CSV
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/first_1000_prime_square_plus_one.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Add distinct prime factors for p^2 + 2"
+            git push origin HEAD:experiment/p2-plus-1-patterns
+          fi
