@@ -1,0 +1,33 @@
+name: Generate HL point-model SVGs
+
+on:
+  push:
+    branches:
+      - experiment/p2-plus-1-patterns
+    paths:
+      - .github/workflows/generate-hl-point-model-svg.yml
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/p2-plus-1-patterns
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pandas matplotlib
+      - run: python experiments/plot_hl_singular_series_point_model.py
+      - name: Commit SVG plots
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/plots/hl_point_model_lag1_progression.svg \
+                  experiments/plots/hl_point_model_dispersion_progression.svg \
+                  experiments/plots/hl_residual_pair_weight_check.svg
+          git diff --cached --quiet || git commit -m "Add SVG plots for singular-series point model"
+          git push origin HEAD:experiment/p2-plus-1-patterns
