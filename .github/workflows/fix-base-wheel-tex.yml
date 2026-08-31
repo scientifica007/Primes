@@ -20,9 +20,9 @@ jobs:
           from pathlib import Path
           p = Path('experiments/BASE_WHEEL_Q7919_SWEEP_STUDY.tex')
           s = p.read_text(encoding='utf-8')
-          s = s.replace('\\]\\nيعطي:', '\\]\nيعطي:')
-          s = s.replace('\\]\\nيصبح', '\\]\nيصبح')
-          s = s.replace('\\]\\nبدل:', '\\]\nبدل:')
+          s = s.replace(r'\nيعطي:', 'يعطي:')
+          s = s.replace(r'\nيصبح', 'يصبح')
+          s = s.replace(r'\nبدل:', 'بدل:')
           p.write_text(s, encoding='utf-8')
           PY
       - name: Commit fix
