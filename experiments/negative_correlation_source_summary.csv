@@ -1,0 +1,20 @@
+metric,value,notes
+lag1_original_prime_square_q997,-0.124267,"450 intervals, p_n>=4001"
+lag1_after_removing_prime_gap,-0.118071,linear removal
+lag1_after_removing_index_trend,-0.124474,linear removal
+lag1_after_removing_gap_and_trend,-0.118305,linear removal
+block_variance_ratio_m2,0.852444,MC lower-tail p=0.00095
+block_variance_ratio_m3,0.742166,MC lower-tail p=0.00005
+block_variance_ratio_m5,0.604524,MC lower-tail p=0.00005
+block_variance_ratio_m10,0.526552,MC lower-tail p=0.00035
+block_variance_ratio_m20,0.461044,MC lower-tail p=0.00290
+block_variance_ratio_m50,0.169647,MC lower-tail p=0.00010
+cumulative_error_lag1,0.873211,independent-model mean=0.981266; p=0.00005
+shifted_controls_mean_lag1,-0.162402,"80 shifted copies, same interval lengths"
+prime_square_lag1_percentile_among_shifted,0.8125,81.25% controls were <= actual
+equal_length_H,80000,"500 adjacent intervals, range 20M..60M"
+equal_length_q997_R,1.001575,dispersion almost exactly matched
+equal_length_q997_lag1,-0.177155,MC lower-tail p=0.00020
+median_X_over_H_prime_square_sample,419.9168,p_n>=4001 sample
+heuristic_corr_minus_log2_over_log_X_over_H,-0.114759,short-interval variance heuristic
+observed_prime_square_lag1_for_heuristic_compare,-0.124267,same sample
