@@ -18,10 +18,11 @@
 
 معظم المسار الخوارزمي الذي وصلنا إليه معروف في أدبيات الغربلة:
 
-- الغربلة المجزأة Segmented Sieve معروفة على الأقل منذ Bays وHudson (1977).
+- نسخة مجزأة من غربال إراتوستينس منشورة على الأقل منذ R. C. Singleton سنة 1969؛ وBays–Hudson (1977) قدما معالجة وتحليلًا واستخدامًا واسع النطاق للـsegmented sieve.
 - فكرة تجنب مضاعفات الأوليات الصغيرة بعجلة Wheel صيغت ودرست بوضوح عند Paul Pritchard في 1981–1983.
-- المقايضات بين الزمن والذاكرة في غرابيل الأوليات درست عند Jonathan Sorenson، خصوصًا في 1990 و1998.
+- المقايضات بين الزمن والذاكرة في غرابيل الأوليات درست عند Jonathan Sorenson، خصوصًا في 1990–1998.
 - تصميم غربلة مجزأة cache-friendly مع bucket scheduling للأوليات الكبيرة طوّره Tomás Oliveira e Silva بدءًا من 2001 ووثقه في 2002/2003.
+- Járai–Vatai (2011) درسا أيضًا locality للغربلة مع cyclic data structures وin-place bucket-sort.
 - `primesieve` الحديث يطبق segmented Eratosthenes + wheel factorization + cache-size tuning + bucket sieve وتحسينات SIMD/branch/cache إضافية.
 - Atkin–Bernstein (2004) يمثل مسارًا نظريًا مختلفًا مبنيًا على binary quadratic forms.
 
@@ -36,13 +37,13 @@
 | حذف مضاعفات الأوليات / البدء من `p²` | Sieve of Eratosthenes وتحسيناته القياسية | **KNOWN** |
 | عدم تمثيل الزوجيات | تحسين كلاسيكي | **KNOWN** |
 | bitset بدل كائن لكل عدد | تطبيقات الغربلة المدمجة الحديثة | **KNOWN** |
-| segmented sieve | Bays & Hudson, 1977 | **KNOWN** |
+| segmented sieve | Singleton 1969؛ Bays & Hudson 1977 | **KNOWN** |
 | تمثيل فقط الأعداد المتباينة أوليًا مع primorial | Pritchard wheel sieve, 1981–1983 | **KNOWN** |
 | `6 -> 30 -> 210 -> 2310 -> 30030` | wheel/primorial sieves | **KNOWN** |
 | الكثافة `phi(M)/M` | Euler totient / wheel theory | **KNOWN** |
 | مقايضة wheel أكبر مقابل جدول أكبر | wheel-sieve engineering literature | **KNOWN** |
-| اختيار حجم المقطع وفق L1/L2 | Oliveira e Silva; primesieve | **KNOWN** |
-| bucket scheduling للأوليات الكبيرة | Oliveira e Silva, 2001+ | **KNOWN** ولم نطبقه بعد |
+| اختيار حجم المقطع وفق L1/L2 | Oliveira e Silva؛ primesieve | **KNOWN** |
+| bucket scheduling للأوليات الكبيرة | Oliveira e Silva, 2001+؛ Járai–Vatai 2011 | **KNOWN** ولم نطبقه بعد |
 | جداول wheel مضغوطة fixed-width | تحسين تمثيل هندسي طبيعي؛ توجد أشكال عديدة منه | **REPLICATION/ENGINEERING** |
 | نتائج أفضل حجم مقطع على GitHub runner | خاص بتطبيقنا/المعالج/بايثون | **PROJECT-SPECIFIC BENCHMARK** |
 | فحص آخر رقم/آخر رقمين/ثلاثة في base `b` | arithmetic progressions modulo `b^k` | **KNOWN FRAMEWORK** |
@@ -52,19 +53,22 @@
 | انتقالات بواقي **الأوليات المتتالية** | Lemke Oliver–Soundararajan, 2016 | **KNOWN NONTRIVIAL BIAS** |
 | انتقالات الأرقام داخل **العدد الأولي نفسه** بعد إزالة modular effects | لم نجد في هذا المسح نتيجة مطابقة مباشرة | **OPEN/NEEDS LITERATURE SEARCH** |
 | مقياس معلوماتي يبحث عن base يميز prime/composite بعد conditioning الكامل على congruences | لم نجد نتيجة مطابقة مباشرة | **OPEN/EXPERIMENTAL** |
-| اختيار wheel تكيفية آليًا من نموذج cache/memory لا من benchmark فقط | توجد auto-tuning أفكار مشابهة؛ الجدة غير مثبتة | **OPEN ONLY IF FORMALIZED** |
+| اختيار wheel تكيفية آليًا من نموذج cache/memory لا من benchmark فقط | توجد auto-tuning/cache-aware أفكار مشابهة؛ الجدة غير مثبتة | **OPEN ONLY IF FORMALIZED** |
 
 ---
 
 ## 1. Segmented Sieve
 
-Carter Bays وRichard H. Hudson نشرا في 1977:
+أقدم مرجع واضح وجدناه في هذا المسح هو:
 
-> *The segmented sieve of Eratosthenes and primes in arithmetic progressions to 10^12*, BIT 17, 121–127.
+R. C. Singleton, **ACM Algorithm 357: An Efficient Prime Number Generator**, Communications of the ACM 12(10), 563–564 (1969).
 
+لاحقًا نشر Carter Bays وRichard H. Hudson في 1977:
+
+*The segmented sieve of Eratosthenes and primes in arithmetic progressions to 10^12*, BIT 17, 121–127.  
 DOI: https://doi.org/10.1007/BF01932283
 
-هذا يضع فكرة تقسيم المجال إلى segments خارج أي ادعاء جدة في مشروعنا.
+إذن فكرة تقسيم المجال إلى segments ليست جزءًا من أي ادعاء جدة في مشروعنا.
 
 ---
 
@@ -79,7 +83,7 @@ DOI: https://doi.org/10.1007/BF01932283
 3. **1983** — *Fast Compact Prime Number Sieves (among Others)*, Journal of Algorithms 4(4), 332–344.  
    DOI: https://doi.org/10.1016/0196-6774(83)90014-7
 
-ورقة 1983 تصف عائلة parameterized من الغرابيل وتتعامل صراحةً مع الاقتصار على الأعداد غير القابلة للقسمة على أول `k` أوليات. هذه هي البنية الرياضية الأساسية لما أسميناه في المشروع:
+ورقة 1983 تصف عائلة parameterized من الغرابيل وتتعامل صراحةً مع الاقتصار على الأعداد غير القابلة للقسمة على أول `k` أوليات. هذه هي البنية الرياضية الأساسية لما أسميناه:
 
 ```text
 Wheel-6
@@ -99,14 +103,15 @@ Jonathan Sorenson:
 
 - *An Introduction to Prime Number Sieves*, University of Wisconsin Technical Report TR909, 1990.  
   https://minds.wisconsin.edu/handle/1793/59248
+- *An Analysis of Two Prime Number Sieves*, TR1028, 1991.
 - *Trading Time for Space in Prime Number Sieves*, ANTS-III, 1998, pp. 179–195.  
   DOI: https://doi.org/10.1007/BFb0054861
 
-هذه الأعمال مهمة لأن مشروعنا مر مرارًا بنفس السؤال: هل نزيد wheel/الضغط/التجزئة مقابل زمن إضافي؟ هذا النوع من space-time tradeoff جزء صريح من الأدبيات، وليس اتجاهًا جديدًا بحد ذاته.
+هذه الأعمال مهمة لأن مشروعنا مر مرارًا بنفس السؤال: هل نزيد wheel/الضغط/التجزئة مقابل زمن إضافي؟ هذا النوع من space-time tradeoff جزء صريح من الأدبيات.
 
 ---
 
-## 4. Oliveira e Silva: cache وbucket scheduling
+## 4. Oliveira e Silva وJárai–Vatai: cache وbucket scheduling
 
 Tomás Oliveira e Silva وثق *Fast implementation of the segmented sieve of Eratosthenes*، وهي خوارزمية صممت أصلًا لحسابات قرب `10^17` و`10^18`.
 
@@ -114,12 +119,19 @@ Tomás Oliveira e Silva وثق *Fast implementation of the segmented sieve of Er
 
 النقاط ذات الصلة المباشرة بمشروعنا:
 
-- bit واحد لكل مرشح بعد pre-sieving بعوامل صغيرة مثل `2,3,5`.
-- segments صغيرة لتبقى البيانات المهمة في cache.
-- مشكلة أن المرور على **كل sieving primes لكل segment** يصبح مكلفًا عندما يكون `N` ضخمًا.
-- الحل: توزيع sieving primes على قوائم/buckets مرتبطة بالمقاطع التي ستضرب فيها لاحقًا، ثم نقلها إلى bucket التالي عند المعالجة.
+- bit واحد لكل مرشح بعد pre-sieving بعوامل صغيرة مثل `2,3,5`؛
+- segments صغيرة لتبقى البيانات المهمة في cache؛
+- مشكلة أن المرور على كل sieving primes لكل segment يصبح مكلفًا عندما يكون `N` ضخمًا؛
+- توزيع sieving primes على buckets مرتبطة بالمقاطع التي ستضرب فيها لاحقًا، ثم نقلها إلى bucket التالي عند المعالجة.
 
-هذه نقطة يتوقف عندها تطبيقنا الحالي: نحن ما زلنا نمر على base primes في كل segment ثم نقرر متى نتوقف. إذا أردنا تجاوز prior art الحالي فعلينا أولًا تنفيذ bucket scheduling المعروف ومقارنته، لا الادعاء أن تقليل ذاكرة segment وحده جديد.
+Antal Járai وEmil Vatai نشرا أيضًا:
+
+*Cache optimized linear sieve*, Acta Univ. Sapientiae, Informatica 3(2) (2011), 205–223.  
+arXiv: https://arxiv.org/abs/1111.3297
+
+ويعالجان أثر large sieving primes على locality باستخدام cyclic data structures وin-place bucket-sort.
+
+هذه نقطة يتوقف عندها تطبيقنا الحالي: نحن ما زلنا نمر على base primes في كل segment. إذا أردنا تحسينًا خوارزميًا جديًا فعلينا أولًا تنفيذ/مقارنة bucket scheduling المعروف.
 
 ---
 
@@ -129,15 +141,19 @@ Tomás Oliveira e Silva وثق *Fast implementation of the segmented sieve of Er
 
 وثيقة الخوارزميات: https://github.com/kimwalisch/primesieve/blob/master/doc/ALGORITHMS.md
 
-`primesieve` يستخدم:
+`primesieve` يوثق أنه يستخدم:
 
 - segmented Sieve of Eratosthenes؛
-- wheel factorization؛
-- bit array؛
-- اكتشاف L1/L2 واختيار sieve size بناءً عليه؛
-- خوارزميات مختلفة للأوليات الصغيرة والمتوسطة والكبيرة؛
-- bucket sieve مستمد من Oliveira e Silva عند الحاجة؛
-- SIMD وتحسينات لتقليل branch misprediction واستخدام cache hierarchy.
+- bit array بـ8 flags لكل 30 عددًا؛
+- pre-sieving للأوليات الصغيرة؛
+- modulo-210 wheel؛
+- اكتشاف/استخدام L1 وL2؛
+- خوارزميات متخصصة للأوليات الصغيرة والمتوسطة والكبيرة؛
+- bucket sieve مستمد من Oliveira e Silva للأعداد الكبيرة؛
+- ضغط sieve/wheel indexes؛
+- SIMD وloop unrolling وbranch/cache optimizations.
+
+كما يذكر صراحةً أن wheel أكبر نظريًا ليست بالضرورة أسرع عمليًا، وأن modulo 30 أو 210 غالبًا أفضل لأسباب cache.
 
 من الآن فصاعدًا **السرعة مقارنة بإصدار أقدم من كودنا لا تكفي**. أي ادعاء أداء يجب أن يتضمن baseline خارجيًا مثل `primesieve`، ويفضل single-thread عند مقارنة خوارزمية single-thread.
 
@@ -150,9 +166,7 @@ A. O. L. Atkin وDaniel J. Bernstein:
 *Prime sieves using binary quadratic forms*, Mathematics of Computation 73 (2004), 1023–1030.  
 DOI: https://doi.org/10.1090/S0025-5718-03-01501-1
 
-الخوارزمية لا تكتفي بإعادة ترتيب Eratosthenes/Wheel بل تعتمد تمثيلات بأشكال تربيعية ثنائية. الورقة تعطي حدودًا نظرية مختلفة للعمليات والذاكرة.
-
-هذا مرجع مهم لتذكيرنا بأن تحسين Wheel داخل Eratosthenes ليس المجال الوحيد لخوارزميات توليد الأوليات.
+الخوارزمية لا تكتفي بإعادة ترتيب Eratosthenes/Wheel بل تعتمد تمثيلات بأشكال تربيعية ثنائية، وتعطي حدودًا نظرية مختلفة للعمليات والذاكرة.
 
 ---
 
@@ -162,7 +176,7 @@ DOI: https://doi.org/10.1090/S0025-5718-03-01501-1
 
 آخر `k` أرقام للعدد `n` في base `b` تحدد `n mod b^k`. لذلك توزيع suffixes للأوليات يدخل مباشرة في نظرية الأوليات في المتتاليات الحسابية/reduced residue classes.
 
-هذا يعني أن مجرد ملاحظة أن بعض suffixes لا تظهر أو أن المسموح منها يقترب من الانتظام لا يمثل بنية رقمية جديدة.
+مجرد ملاحظة أن بعض suffixes لا تظهر أو أن المسموح منها يقترب من الانتظام لا يمثل بنية رقمية جديدة.
 
 ### 7.2 مجموع الأرقام
 
@@ -173,15 +187,13 @@ DOI: https://doi.org/10.4007/annals.2010.171.1591
 
 بصورة مختصرة: مجموع أرقام الأوليات في قاعدة ثابتة يتوزع توزيعًا منتظمًا في المتتاليات الحسابية، باستثناء حالات degeneracy المعروفة.
 
-إذن قسم digit-sum في تجربتنا يجب أن يبدأ من هذه النتيجة، لا من الصفر.
-
 ### 7.3 concatenated prime digits
 
-Copeland وErdős أثبتا سنة 1946 أن العدد الناتج من concatenation للأوليات هو normal في القاعدة المناسبة تحت شروط عامة.
+Copeland وErdős أثبتا سنة 1946 أن العدد الناتج من concatenation للأوليات هو normal في القاعدة المناسبة تحت شروط عامة:
 
 A. H. Copeland & P. Erdős, *Note on Normal Numbers*, Bulletin of the AMS 52 (1946), 857–860.
 
-هذا لا يجيب سؤالنا نفسه عن أرقام **كل عدد أولي منفردًا**، لكنه يثبت أن دراسة “العشوائية الرقمية للأوليات” لها تاريخ أقدم بكثير من مشروعنا.
+هذا لا يجيب سؤالنا نفسه عن أرقام كل عدد أولي منفردًا، لكنه يثبت أن دراسة “العشوائية الرقمية للأوليات” لها تاريخ قديم.
 
 ### 7.4 انتقالات بواقي الأوليات المتتالية
 
@@ -191,7 +203,7 @@ Robert J. Lemke Oliver وKannan Soundararajan وجدا انحيازات غير �
 DOI: https://doi.org/10.1073/pnas.1605366113  
 arXiv: https://arxiv.org/abs/1603.03720
 
-هذا مهم جدًا عند تفسير transition matrices: توجد بالفعل biases غير تافهة في انتقالات `p_n mod q -> p_{n+1} mod q`. لكنها مسألة مختلفة عن transition بين digits متجاورة داخل تمثيل `p_n` نفسه.
+هذا مهم عند تفسير transition matrices: توجد بالفعل biases غير تافهة في انتقالات `p_n mod q -> p_{n+1} mod q`. لكنها مسألة مختلفة عن transition بين digits متجاورة داخل تمثيل `p_n` نفسه.
 
 ---
 
@@ -201,32 +213,25 @@ arXiv: https://arxiv.org/abs/1603.03720
 
 صياغة ممكنة:
 
-> بعد conditioning على كل المعلومات التي يفرضها `n mod b^k`، و`b-1`، و`b+1`، وحجم العدد/عدد خاناته، هل يبقى statistic رقمي ذو قدرة تمييز مستقرة بين prime وcomposite تتجاوز null model مناسبًا؟
+> بعد conditioning على المعلومات التي يفرضها `n mod b^k` و`b-1` و`b+1` وحجم العدد/عدد خاناته، هل يبقى statistic رقمي ذو قدرة تمييز مستقرة بين prime وcomposite تتجاوز null model مناسبًا؟
 
 لكي يكون هذا سؤالًا علميًا يجب:
 
-1. تعريف null model قبل رؤية النتائج.
-2. تصحيح multiple testing عبر القواعد والأنماط.
-3. فصل train range عن validation range.
-4. اختبار الإشارة على مراتب أكبر (`10^8`, `10^9`, ...).
+1. تعريف null model قبل رؤية النتائج؛
+2. تصحيح multiple testing عبر القواعد والأنماط؛
+3. فصل train range عن validation range؛
+4. اختبار الإشارة على مراتب أكبر؛
 5. البحث عن تفسير نظري؛ لا يكفي classifier أفضل قليلًا.
 
 الحالة: **OPEN/EXPERIMENTAL**، ولا يوجد ادعاء جدة حاليًا.
 
 ### B. نموذج تكلفة wheel/segment قابل للتنبؤ
 
-بدل brute-force benchmarking فقط، يمكن محاولة بناء نموذج يتنبأ بأفضل:
-
-- primorial wheel؛
-- segment size؛
-- table representation؛
-- scheduling strategy؛
-
-من خصائص cache والمعالج وكثافة المرشحين، ثم اختباره على معماريات متعددة.
+بدل brute-force benchmarking فقط، يمكن محاولة بناء نموذج يتنبأ بأفضل primorial wheel وsegment size وtable representation وscheduling strategy من خصائص cache والمعالج وكثافة المرشحين، ثم اختباره على معماريات متعددة.
 
 لكن توجد auto-tuning وcache-aware implementations سابقة؛ الجدة لن تثبت إلا إذا كان النموذج مختلفًا ويفسر/يتنبأ أفضل من heuristics الموجودة.
 
-الحالة: **POSSIBLE ENGINEERING RESEARCH**, لا ادعاء جدة بعد.
+الحالة: **POSSIBLE ENGINEERING RESEARCH**، لا ادعاء جدة بعد.
 
 ### C. ذاكرة base primes / bucket hierarchy
 
@@ -242,24 +247,20 @@ arXiv: https://arxiv.org/abs/1603.03720
 
 1. كل تجربة جديدة تبدأ بقسم `Prior art checked`.
 2. نستخدم baseline خارجيًا، لا نسخ مشروعنا فقط.
-3. نفرق بين:
-   - mathematical novelty؛
-   - implementation novelty؛
-   - machine-specific tuning؛
-   - replication.
+3. نفرق بين mathematical novelty وimplementation novelty وmachine-specific tuning وreplication.
 4. نتيجة سلبية موثقة أفضل من ادعاء إيجابي بلا null model.
 5. أي “نمط” يختفي بعد conditioning modular يصنف فورًا **explained**.
 6. أي benchmark لـPython أمام C/C++ لا يستخدم وحده للحكم على الخوارزمية؛ نفصل أثر اللغة عن أثر الخوارزمية.
-7. لا نستخدم كلمة “اكتشاف” في README إلا مع مرجع يثبت أن السؤال لم يكن معروفًا أو مع نتيجة نظرية جديدة.
+7. لا نستخدم كلمة “اكتشاف” إلا مع سند مناسب.
 
 ---
 
-## 10. الخطوة التالية المعيارية
+## 10. Baseline خارجي
 
-أضفنا مسار benchmark خارجيًا يقارن تطبيق المشروع مع `primesieve` على نفس GitHub runner. المقارنة تسجل نتيجتين مختلفتين عمدًا:
+أضيف مسار benchmark خارجي يقارن تطبيق المشروع مع `primesieve` على نفس GitHub runner. المقارنة تسجل نتيجتين مختلفتين عمدًا:
 
-1. **prime counting** في `primesieve` — أقصى throughput لمهمة العد، وليس نفس workload مشروعنا.
-2. **prime iteration + count + checksum + last prime** عبر C++ API لـ`primesieve` — workload أقرب إلى دالة `consume_primes_compact_spec()` في مشروعنا.
+1. **prime counting** في `primesieve` — سقف throughput لمهمة العد، وليس نفس workload مشروعنا.
+2. **prime iteration + count + checksum + last prime** عبر C++ API لـ`primesieve` — workload أقرب إلى `consume_primes_compact_spec()`.
 
 هذا يمنع مقارنة غير عادلة بين “عد فقط” و“توليد كل الأوليات ومعالجتها في Python”.
 
@@ -267,13 +268,15 @@ arXiv: https://arxiv.org/abs/1603.03720
 
 ## مراجع أساسية
 
+- Singleton, R. C. (1969), *ACM Algorithm 357: An Efficient Prime Number Generator*, CACM 12(10), 563–564.
 - Bays, C.; Hudson, R. H. (1977), *The segmented sieve of Eratosthenes and primes in arithmetic progressions to 10^12*, BIT 17, 121–127. https://doi.org/10.1007/BF01932283
-- Pritchard, P. (1981), *A Sublinear Additive Sieve for Finding Prime Numbers*, CACM 24(1), 18–23. https://doi.org/10.1145/358527.358540
-- Pritchard, P. (1982), *Explaining the Wheel Sieve*, Acta Informatica 17, 477–485. https://doi.org/10.1007/BF00264164
-- Pritchard, P. (1983), *Fast Compact Prime Number Sieves (among Others)*, Journal of Algorithms 4, 332–344. https://doi.org/10.1016/0196-6774(83)90014-7
+- Pritchard, P. (1981), *A Sublinear Additive Sieve for Finding Prime Numbers*. https://doi.org/10.1145/358527.358540
+- Pritchard, P. (1982), *Explaining the Wheel Sieve*. https://doi.org/10.1007/BF00264164
+- Pritchard, P. (1983), *Fast Compact Prime Number Sieves (among Others)*. https://doi.org/10.1016/0196-6774(83)90014-7
 - Sorenson, J. (1990), *An Introduction to Prime Number Sieves*, TR909. https://minds.wisconsin.edu/handle/1793/59248
 - Sorenson, J. (1998), *Trading Time for Space in Prime Number Sieves*. https://doi.org/10.1007/BFb0054861
 - Oliveira e Silva, T., *Fast implementation of the segmented sieve of Eratosthenes*. https://sweet.ua.pt/tos/software/prime_sieve.html
+- Járai, A.; Vatai, E. (2011), *Cache optimized linear sieve*. https://arxiv.org/abs/1111.3297
 - Atkin, A. O. L.; Bernstein, D. J. (2004), *Prime sieves using binary quadratic forms*. https://doi.org/10.1090/S0025-5718-03-01501-1
 - Mauduit, C.; Rivat, J. (2010), *Sur un problème de Gelfond : la somme des chiffres des nombres premiers*. https://doi.org/10.4007/annals.2010.171.1591
 - Lemke Oliver, R. J.; Soundararajan, K. (2016), *Unexpected biases in the distribution of consecutive primes*. https://doi.org/10.1073/pnas.1605366113
