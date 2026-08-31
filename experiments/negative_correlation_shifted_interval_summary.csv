@@ -1,0 +1,6 @@
+case,dispersion_ratio_R,lag1_autocorrelation,runs_count
+actual_prime_square_intervals,0.988827,-0.124287,256
+shifted_controls_mean,0.972120,-0.162402,248.3
+shifted_controls_sd,0.048936,0.040201,9.600105
+shifted_controls_min,0.860647,-0.250411,222
+shifted_controls_max,1.086347,-0.066699,268
