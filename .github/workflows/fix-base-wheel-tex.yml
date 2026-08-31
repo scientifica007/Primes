@@ -1,0 +1,34 @@
+name: Fix base-wheel LaTeX line breaks
+on:
+  push:
+    branches:
+      - experiment/p2-plus-1-patterns
+    paths:
+      - .github/workflows/fix-base-wheel-tex.yml
+permissions:
+  contents: write
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/p2-plus-1-patterns
+      - name: Fix accidental literal backslash-n sequences
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('experiments/BASE_WHEEL_Q7919_SWEEP_STUDY.tex')
+          s = p.read_text(encoding='utf-8')
+          s = s.replace('\\]\\nيعطي:', '\\]\nيعطي:')
+          s = s.replace('\\]\\nيصبح', '\\]\nيصبح')
+          s = s.replace('\\]\\nبدل:', '\\]\nبدل:')
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit fix
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/BASE_WHEEL_Q7919_SWEEP_STUDY.tex
+          git diff --cached --quiet || git commit -m "fix: correct LaTeX line breaks in base-wheel report"
+          git push
