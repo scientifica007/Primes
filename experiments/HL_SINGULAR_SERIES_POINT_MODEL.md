@@ -48,7 +48,7 @@ g_r(h)=
 ومن ثم، إذا واصلنا الغربلة العشوائية من 997 حتى `Q`، يكون وزن الزوج:
 
 ```math
-G_{997,Q}(h)=\prod_{997<r\le Q} g_r(h).
+G_{997,Q}(h)=\prod_{997\lt r\le Q} g_r(h).
 ```
 
 ويمكن كتابته أيضًا:
@@ -57,7 +57,7 @@ G_{997,Q}(h)=\prod_{997<r\le Q} g_r(h).
 G_{997,Q}(h)
 =
 C_{997,Q}
-\prod_{\substack{997<r\le Q\\r\mid h}}
+\prod_{\substack{997\lt r\le Q\\r\mid h}}
 \frac{r-1}{r-2},
 ```
 
@@ -66,7 +66,7 @@ C_{997,Q}
 ```math
 C_{997,Q}
 =
-\prod_{997<r\le Q}
+\prod_{997\lt r\le Q}
 \left(1-\frac{1}{(r-1)^2}\right).
 ```
 
