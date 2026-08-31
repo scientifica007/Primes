@@ -2,29 +2,61 @@
 
 [![Tests](https://github.com/scientifica007/Primes/actions/workflows/tests.yml/badge.svg)](https://github.com/scientifica007/Primes/actions/workflows/tests.yml)
 
-تجربة منهجية للبحث عن الأعداد الأولية ومقارنة صيغ مختلفة لتنفيذ الفكرة نفسها.
+مشروع تجريبي لدراسة الأعداد الأولية من عدة زوايا: بناء الغربلة خطوةً بخطوة، تمثيل المرشحين، الذاكرة والـcache، عجلات primorial، وتغيير قواعد العد.
+
+## الحالة البحثية — ابدأ من هنا
+
+هذا المستودع **ليس حاليًا ادعاءً بخوارزمية جديدة للأعداد الأولية**. بعد مراجعة الأعمال السابقة، تبيّن أن معظم المسار الخوارزمي الذي وصلنا إليه — segmented sieve، wheel/primorial filtering، bit packing، cache-sized segments — له prior art معروف.
+
+قبل متابعة أي تجربة جديدة اقرأ:
+
+- **[RESEARCH_STATUS.md](RESEARCH_STATUS.md)** — الحالة الحالية وNovelty Gate.
+- **[PRIOR_ART.md](PRIOR_ART.md)** — خريطة الأعمال السابقة: Singleton، Bays–Hudson، Pritchard، Sorenson، Oliveira e Silva، Járai–Vatai، Atkin–Bernstein و`primesieve`، إضافة إلى أدبيات الأنماط الرقمية.
+- **[RESULTS_EXTERNAL_BASELINE.md](RESULTS_EXTERNAL_BASELINE.md)** — مقارنة مباشرة مع `primesieve` على نفس GitHub runner.
+- **[RESULTS_BASE_REPRESENTATIONS.md](RESULTS_BASE_REPRESENTATIONS.md)** — دراسة قواعد العد حتى `N = 10^8`.
+- **[RESULTS_COMPACT_CACHE.md](RESULTS_COMPACT_CACHE.md)** — دراسة wheel/cache والجداول المضغوطة.
+
+### معيار الجدة من الآن فصاعدًا
+
+لا يكفي أن تصبح نسخة أسرع من نسخة أقدم في هذا المستودع. قبل اعتبار نتيجة تقدمًا بحثيًا نسأل:
+
+1. هل الفكرة موجودة في الأدبيات أو في تطبيقات احترافية مثل `primesieve`؟
+2. هل هي مجرد إعادة صياغة لـmodular arithmetic؟
+3. إذا كانت إحصائية، هل يوجد null model وتصحيح multiple testing وvalidation مستقل؟
+4. إذا كانت ادعاء أداء، هل قورنت بbaseline خارجي، وهل فُصل أثر اللغة عن أثر الخوارزمية؟
+
+## خط أساس خارجي
+
+عند `N = 100,000,000`، على **نفس GitHub Actions runner** في التشغيل الرسمي `33346218939`:
+
+```text
+Project Wheel-210, Python, enumerate+checksum:   ~13.27 s
+Project Wheel-30030, Python, enumerate+checksum: ~12.40 s
+primesieve C++ iterator, enumerate+checksum:      ~0.0089 s
+primesieve single-thread count only:              ~0.006–0.007 s
+```
+
+الفارق لا يُفسَّر كفرق خوارزمي صرف؛ تطبيقنا يعمل في Python ويخلو من عدد من تقنيات التنفيذ المنخفض المستوى الموجودة في `primesieve` مثل pre-sieving المتقدم، SIMD، loop unrolling، specialized prime paths وbucket scheduling. الغرض من هذا baseline هو منع المبالغة في تفسير تحسينات داخلية للمشروع.
 
 ## الفكرة الأصلية
 
-نبدأ بقائمة الأعداد الطبيعية حتى حد أعلى `N`، ثم:
+بدأ المشروع من بناء غربلة بصورة قائمة/طرح:
 
-1. نحذف الأعداد الزوجية، وتسمى القائمة الناتجة **أ**.
-2. نضع `2` و`3` في قائمة الأعداد الأولية.
-3. نحذف مضاعفات `3` من **أ**، وتسمى القائمة الناتجة **ب**.
-4. كل عدد باقٍ يحقق `3 < n < 3²` هو عدد أولي.
-5. نأخذ العدد الأولي التالي `5`، ونحذف مضاعفاته من **ب** لنحصل على قائمة جديدة.
-6. كل عدد باقٍ يحقق `5 < n < 5²` هو أولي، مع عدم إعادة إدراج الأعداد التي صُنفت سابقًا.
-7. ننتقل إلى العدد الأولي التالي ونكرر العملية.
+1. نولد الأعداد الطبيعية حتى `N`.
+2. نحذف الزوجيات.
+3. نعالج `3` ثم `5` ثم بقية الأوليات.
+4. بعد معالجة `p` نستفيد من حقيقة أن أي مركب له عامل أولي لا يتجاوز جذره.
+5. تطورت الصياغة إلى إبقاء العدد الأولي نفسه وحذف مركباته فقط، والبدء من `p²`.
 
-الأساس الرياضي هو أن العدد المركب `n` يملك عاملًا أوليًا لا يتجاوز `sqrt(n)`. لذلك، بعد حذف مضاعفات جميع الأعداد الأولية حتى `p`، لا يمكن أن يبقى عدد مركب أصغر من `p²` لم يُحذف بعامل أصغر.
+> العدد `1` ليس أوليًا ولا مركبًا.
 
-> العدد `1` مستبعد من التصنيف الأولي صراحةً لأنه ليس أوليًا ولا مركبًا.
+هذه الصياغة التعليمية قادتنا تدريجيًا إلى بنى معروفة من غربال إراتوستينس، ثم إلى segmented/wheel implementations.
 
-## الملفات
+## التطبيقات الأساسية
 
 ### `original_method.py`
 
-نسخة مرجعية تحافظ قدر الإمكان على بنية التجربة الأصلية: تنشئ القوائم، تنشئ المضاعفات، تطرحها، وتصنف الأعداد المتبقية بين مربعات الأعداد الأولية.
+نسخة مرجعية تحافظ قدر الإمكان على بنية التجربة الأصلية: قوائم، مضاعفات، طرح، وتصنيف بين مربعات الأوليات.
 
 ```bash
 python original_method.py 100
@@ -32,220 +64,159 @@ python original_method.py 100
 
 ### `retain_prime_method.py`
 
-تجربة **إبقاء العدد الأولي** داخل مجموعة العمل وحذف مضاعفاته المركبة فقط. تستخدم `set` لتمثيل مباشر للفكرة.
+صياغة مباشرة لفكرة **إبقاء العدد الأولي** داخل مجموعة العمل وحذف مضاعفاته المركبة، باستخدام `set`.
 
 ```bash
 python retain_prime_method.py 100
 ```
 
-التقرير:
-
-**[RESULTS_RETAIN_PRIME.md](RESULTS_RETAIN_PRIME.md)**
+التقرير: **[RESULTS_RETAIN_PRIME.md](RESULTS_RETAIN_PRIME.md)**
 
 ### `retain_prime_compact_method.py`
 
-تحل مشكلة ذاكرة `set` مع الحفاظ على الفكرة نفسها:
+ضغط فضاء المرشحين:
 
-- العدد `2` يعالج منفردًا.
-- تمثل الأعداد الفردية فقط.
-- كل مرشح فردي يأخذ **بتًا واحدًا**.
-- يبدأ حذف مضاعفات `p` من `p²` وبخطوة `2p`.
-- الناتج النهائي في هذه النسخة ما زال `list[int]` تقليدية.
+- العدد `2` منفرد؛
+- الأعداد الفردية فقط؛
+- بت واحد لكل مرشح؛
+- الشطب من `p²` وبخطوة `2p`.
 
 عند `N = 100000` تحتاج مصفوفة المرشحين نفسها إلى `6250` بايت فقط.
 
-```bash
-python retain_prime_compact_method.py 100
-```
-
-التقرير:
-
-**[RESULTS_COMPACT_MEMORY.md](RESULTS_COMPACT_MEMORY.md)**
+التقرير: **[RESULTS_COMPACT_MEMORY.md](RESULTS_COMPACT_MEMORY.md)**
 
 ### `retain_prime_packed_output_method.py`
 
-تضغط **فضاء المرشحين والناتج معًا**:
+يضغط فضاء المرشحين والناتج معًا:
 
-- المرشحون: بت واحد لكل عدد فردي.
-- الناتج الكامل: `array('I')` أو `array('Q')` بدل `list[int]`.
-- عند عدم الحاجة إلى الاحتفاظ بكل النتائج: `iter_primes_retain_packed()` كواجهة streaming.
+- bitset للمرشحين؛
+- `array('I')`/`array('Q')` للناتج الكامل؛
+- streaming عند عدم الحاجة للاحتفاظ بكل النتائج.
 
 ```bash
 python retain_prime_packed_output_method.py 100
 python retain_prime_packed_output_method.py 100 --stream
 ```
 
-التقرير:
-
-**[RESULTS_PACKED_OUTPUT.md](RESULTS_PACKED_OUTPUT.md)**
+التقرير: **[RESULTS_PACKED_OUTPUT.md](RESULTS_PACKED_OUTPUT.md)**
 
 ### `segmented_method.py`
 
-المرحلة التالية للتوسع في `N`: بدل تخصيص bitset لكل الأعداد الفردية حتى `N`، يقسم المجال إلى **مقاطع ثابتة السعة**.
+غربلة مجزأة: بدل bitset لكل المجال، يعالج مقطعًا ثابت السعة ثم يتخلص منه.
 
-السعة الافتراضية:
+السعة الافتراضية الأصلية:
 
 ```text
 32768 عددًا فرديًا = 4096 bytes للمقطع
 ```
 
-في كل مقطع:
+التقرير: **[RESULTS_SEGMENTED.md](RESULTS_SEGMENTED.md)**
 
-- يبقى العدد الأولي ولا يُحذف.
-- تحذف المركبات باستخدام أوليات الأساس حتى `sqrt(N)`.
-- يبدأ شطب `p` من `p²` أو أول مضاعف له داخل المقطع.
-- تكون خطوة الشطب `2p` لأن الزوجيات غير ممثلة.
-- تُخرج النتائج streaming ثم يُتخلص من المقطع.
+> ملاحظة prior art: segmented sieve معروف منذ أعمال مبكرة منها Singleton (1969) وBays–Hudson (1977). انظر `PRIOR_ART.md`.
 
-واجهات الاستخدام:
+### Wheel / Primorial sieves
 
-```python
-iter_primes_segmented(...)
-consume_primes_segmented(...)
-primes_segmented_packed(...)
+طُورت تجارب:
+
+```text
+6 -> 30 -> 210 -> 2310 -> 30030
 ```
 
-تشغيل مثال:
+حيث لا نمثل إلا البواقي المتباينة أوليًا مع modulus العجلة.
 
-```bash
-python segmented_method.py 1000000
-python segmented_method.py 1000000 --segment-odds 32768
+ملفات وتقارير مرتبطة تشمل:
+
+- `primorial_wheel_segmented_method.py`
+- `compact_primorial_wheel_method.py`
+- **[RESULTS_WHEEL30.md](RESULTS_WHEEL30.md)**
+- **[RESULTS_WHEEL210.md](RESULTS_WHEEL210.md)**
+- **[RESULTS_COMPACT_CACHE.md](RESULTS_COMPACT_CACHE.md)**
+
+> ملاحظة prior art: wheel sieves وprimorial filtering معروفان خصوصًا من أعمال Paul Pritchard في 1981–1983.
+
+### `compact_primorial_wheel_method.py`
+
+نسخة cache-aware تضغط جداول العجلة إلى fixed-width arrays وتعيد استخدام `WheelSpec`.
+
+في القياسات الرسمية انخفض payload جدول Wheel-30030 إلى نحو `71.6 KB` بدل مئات الكيلوبايت من كائنات Python في التمثيل القديم.
+
+## دراسة قواعد العد
+
+`base_representation_study.py` والملفات المرتبطة تدرس القواعد:
+
+```text
+b = 2, 3, ..., 100
 ```
 
-التقرير الرسمي:
+مع اهتمام بـ:
 
-**[RESULTS_SEGMENTED.md](RESULTS_SEGMENTED.md)**
-
-### `optimized_method.py`
-
-نسخة غربال محسنة تستخدم `bytearray`، تبدأ الشطب من `p²`، وتتجنب المرور على المضاعفات الزوجية بعد معالجة `2`.
-
-```bash
-python optimized_method.py 100
+```text
+6, 30, 210, 2310
 ```
 
-### `trace_method.py`
+وتم التوسع حتى:
 
-نسخة تعليمية تعرض القوائم **أ، ب، ج...** والمضاعفات المحذوفة والأعداد الأولية الجديدة مرحلةً بمرحلة.
-
-```bash
-python trace_method.py 100
+```text
+N = 100,000,000
 ```
 
-مثال كامل:
+شملت الدراسة suffixes، entropy، transitions، digit sums، علاقات `b-1` و`b+1`، ومقارنة prime/composite مع null baselines.
 
-**[TRACE_100.md](TRACE_100.md)**
+النتيجة الحالية: معظم الإشارات القوية رجعت إلى modular structure معروف، ولم يظهر حتى الآن نمط رقمي قوي مستقل عنها.
+
+التقرير: **[RESULTS_BASE_REPRESENTATIONS.md](RESULTS_BASE_REPRESENTATIONS.md)**
+
+## Prior Art والاتجاهات المفتوحة
+
+**[PRIOR_ART.md](PRIOR_ART.md)** يصنف كل اتجاه إلى:
+
+- `KNOWN`
+- `REPLICATION/ENGINEERING`
+- `PROJECT-SPECIFIC BENCHMARK`
+- `OPEN/EXPERIMENTAL`
+
+أهم الاتجاهات التي ما زالت تستحق الفحص دون ادعاء جدة مسبق:
+
+1. statistics رقمية بعد conditioning modular صارم، null models، multiple-testing correction وvalidation مستقل؛
+2. نموذج cost/cache تنبؤي لاختيار wheel/segment عبر معماريات متعددة، إذا تفوق على heuristics المعروفة؛
+3. أي فكرة غربلة جديدة فقط بعد تنفيذ/مقارنة prior art مثل bucket scheduling؛
+4. port منخفض المستوى إذا كان الهدف مقارنة الخوارزمية نفسها بدل قياس overhead لغة Python.
+
+## Baseline الاحترافي
+
+الملفات:
+
+- `baseline_primesieve.cpp`
+- `benchmark_project_external_baseline.py`
+- `.github/workflows/external-baseline.yml`
+
+تسمح بإعادة مقارنة المشروع مع `primesieve` على نفس runner. الـworkflow يدوي حتى لا يعاد benchmark ثقيل مع كل commit.
+
+التقرير: **[RESULTS_EXTERNAL_BASELINE.md](RESULTS_EXTERNAL_BASELINE.md)**
+
+## التحقق
 
 ### `ci_verify.py`
 
-مرجع تحقق مستقل يعتمد القسمة التجريبية حتى `sqrt(n)`، ويقارن جميع التطبيقات، بما فيها `array` والـstreaming والتجزئة.
+مرجع تحقق مستقل يعتمد القسمة التجريبية حتى `sqrt(n)` ويقارن التطبيقات ضمن نطاق CI.
 
 ```bash
 python ci_verify.py 4999
 ```
 
-## المقارنة التجريبية
-
-### المقارنة العامة
-
-`benchmark.py` يقيس:
-
-- صحة النتائج.
-- زمن التنفيذ.
-- ذروة الذاكرة بواسطة `tracemalloc`.
-- تمثيلات الناتج المختلفة: `list` و`array` وstreaming.
-
-```bash
-python benchmark.py
-python benchmark.py 1000 10000 100000 1000000 --repeats 5
-python benchmark.py 1000 10000 100000 --repeats 5 --csv results.csv
-```
-
-### مقارنة التجزئة
-
-`benchmark_segmented.py` يقارن **streaming كامل المجال** مع **streaming مجزأ** من دون الاحتفاظ بقائمة ناتج في أي من الطرفين.
-
-```bash
-python benchmark_segmented.py
-python benchmark_segmented.py 100000 1000000 --repeats 5 --segment-odds 32768
-```
-
-ويتحقق من التطابق بواسطة عدد الأوليات ومجموعها وآخر عدد أولي.
-
-## النتائج الموثقة
-
-- **[RESULTS.md](RESULTS.md)** — خط الأساس الأولي.
-- **[RESULTS_RETAIN_PRIME.md](RESULTS_RETAIN_PRIME.md)** — تجربة إبقاء العدد الأولي.
-- **[RESULTS_GITHUB_ACTIONS.md](RESULTS_GITHUB_ACTIONS.md)** — أول benchmark رسمي على GitHub Actions.
-- **[RESULTS_COMPACT_MEMORY.md](RESULTS_COMPACT_MEMORY.md)** — ضغط فضاء المرشحين إلى بت واحد لكل عدد فردي.
-- **[RESULTS_PACKED_OUTPUT.md](RESULTS_PACKED_OUTPUT.md)** — ضغط الناتج بواسطة `array` واختبار streaming.
-- **[RESULTS_SEGMENTED.md](RESULTS_SEGMENTED.md)** — تقسيم فضاء البحث إلى مقاطع ثابتة ودراسة توسع الذاكرة حتى `N = 10,000,000`.
-
-## خلاصة ضغط الذاكرة عند N = 100000
-
-في Benchmark رسمي على GitHub Actions:
-
-| التمثيل | ذروة الذاكرة |
-|---|---:|
-| إبقاء الأولي باستخدام `set` | 8,800,704 B |
-| النسخة المحسنة السابقة | 491,206 B |
-| bitset + `list[int]` | 397,491 B |
-| **bitset + `array`** | **47,767 B** |
-| **bitset + streaming** | **7,767 B** |
-
-عند هذا الحد، تخزين الناتج في `array` خفض الذاكرة بنحو **87.98%** مقارنة بالنسخة التي تستخدم bitset لكنها تعيد `list[int]`، وبنحو **90.28%** مقارنة بالنسخة المحسنة السابقة.
-
-## خلاصة التجزئة والتوسع
-
-بمقاطع سعتها `32768` عددًا فرديًا:
-
-| N | full streaming peak | segmented streaming peak | نسبة full / segmented |
-|---:|---:|---:|---:|
-| 100,000 | 7,787 B | 8,506 B | 0.92× |
-| 1,000,000 | 64,029 B | **10,872 B** | **5.89×** |
-| 10,000,000 | 626,625 B | **12,116 B** | **51.72×** |
-
-عند `N = 100000` لا تفيد التجزئة لأن bitset الكامل صغير أصلًا. لكن عند `N = 10000000` خفضت الذاكرة بنحو **98.07%** مقارنة بالـstream الكامل.
-
-والأهم: عندما زاد `N` بمقدار `100×` من `100000` إلى `10000000`، زادت ذروة الذاكرة المجزأة فقط من نحو `8.5 KB` إلى `12.1 KB`.
-
-هذه الذاكرة ليست ثابتة رياضيًا بالكامل، لأن أوليات الأساس حتى `sqrt(N)` ما زالت تنمو مع `N`. لكن ذاكرة **فضاء البحث الرئيسي** أصبحت مرتبطة بحجم المقطع بدل `N` كله.
-
-## كلفة الزمن في النسخة المجزأة
-
-التحكم القوي في الذاكرة له كلفة في تطبيق Python الحالي. في القياسات الرسمية كانت التجزئة أبطأ بنحو `1.7×` من streaming الكامل.
-
-عند `N = 10,000,000`، بتكرار واحد لفحص اتجاه التوسع:
-
-```text
-full stream = 46.066240 s
-segmented   = 78.815504 s
-```
-
-الغرض من النسخة المجزأة حاليًا هو **التوسع تحت قيد ذاكرة صغير**، لا تحقيق أفضل زمن ممكن.
-
-## اختبارات الصحة المحلية
+### اختبارات محلية
 
 ```bash
 python -m unittest -v
 ```
 
-تتحقق الاختبارات من:
+تشمل الحالات الحدية، تطابق الطرق، bitsets، arrays، streaming، segmentation، wheels والجداول المضغوطة.
 
-- النتائج المعروفة حتى 100.
-- الحالات الحدية الصغيرة.
-- تطابق جميع الطرق حتى نطاقات اختبار متعددة.
-- صحة تمثيل البتات.
-- صحة `array` المضغوطة.
-- تطابق streaming مع المرجع.
-- عبور حدود مقاطع متعددة في الطريقة المجزأة.
-- أن العدد `1` لا يدخل قائمة الأعداد الأولية.
-
-## GitHub Actions: المرجع الرسمي للتحقق
+## GitHub Actions
 
 ### Tests
 
-`.github/workflows/tests.yml` يعمل تلقائيًا عند كل `push` إلى `main` وكل Pull Request، على:
+`.github/workflows/tests.yml` يعمل عند كل `push` إلى `main` وكل Pull Request على:
 
 ```text
 Python 3.11
@@ -253,36 +224,37 @@ Python 3.12
 Python 3.13
 ```
 
-ويشغل الترجمة، الاختبارات الوحدوية، والتحقق المستقل حتى `N = 4999`.
+ويشغل compile، unit tests، والتحقق المستقل حتى `N = 4999`.
 
-### Benchmark
+### Benchmarks
 
-`.github/workflows/benchmark.yml` مسار يدوي (`workflow_dispatch`) للمقارنة العامة. يسجل بيئة التشغيل والـcommit ويحفظ:
+المسارات الثقيلة أصبحت يدوية في الحالات التي لا يلزم تشغيلها مع كل commit، ومنها:
 
-```text
-benchmark-results.csv
-benchmark-output.txt
-environment.txt
-```
+- المقارنة العامة؛
+- segmented benchmarks؛
+- compact wheel/cache sweeps؛
+- external `primesieve` baseline.
 
-### Segmented Benchmark
+الـartifacts تحفظ بيئة التشغيل والنتائج بحيث لا نعتمد على زمن بلا CPU/commit موثق.
 
-`.github/workflows/segmented-benchmark.yml` مسار يدوي مستقل لدراسة توسع الذاكرة مع التجزئة. يسمح بتحديد:
+## النتائج الموثقة
 
-- حدود `N`.
-- عدد التكرارات.
-- عدد المرشحين الفرديين في كل مقطع.
+- **[RESULTS.md](RESULTS.md)** — خط الأساس الأولي.
+- **[RESULTS_RETAIN_PRIME.md](RESULTS_RETAIN_PRIME.md)** — إبقاء العدد الأولي.
+- **[RESULTS_GITHUB_ACTIONS.md](RESULTS_GITHUB_ACTIONS.md)** — أول benchmark رسمي.
+- **[RESULTS_COMPACT_MEMORY.md](RESULTS_COMPACT_MEMORY.md)** — ضغط فضاء المرشحين.
+- **[RESULTS_PACKED_OUTPUT.md](RESULTS_PACKED_OUTPUT.md)** — ضغط الناتج والـstreaming.
+- **[RESULTS_SEGMENTED.md](RESULTS_SEGMENTED.md)** — التجزئة والتوسع.
+- **[RESULTS_WHEEL30.md](RESULTS_WHEEL30.md)** — Wheel-30.
+- **[RESULTS_WHEEL210.md](RESULTS_WHEEL210.md)** — Wheel-210.
+- **[RESULTS_BASE_REPRESENTATIONS.md](RESULTS_BASE_REPRESENTATIONS.md)** — قواعد العد حتى `10^8`.
+- **[RESULTS_COMPACT_CACHE.md](RESULTS_COMPACT_CACHE.md)** — الجداول المضغوطة وحجم المقطع/cache.
+- **[RESULTS_EXTERNAL_BASELINE.md](RESULTS_EXTERNAL_BASELINE.md)** — المقارنة مع `primesieve`.
 
-ويحفظ:
+## هدف المشروع بعد مراجعة prior art
 
-```text
-segmented-results.csv
-segmented-output.txt
-segmented-environment.txt
-```
+الهدف لم يعد مجرد جعل نسخة المشروع أسرع من النسخة السابقة. الهدف الآن هو:
 
-كـ GitHub Actions artifacts لمدة 90 يومًا.
+> **تمييز ما هو معروف وما هو إعادة تنفيذ وما هو سؤال مفتوح، ثم تصميم تجارب يمكن أن تفشل بوضوح وتنتج أدلة قابلة لإعادة الإنتاج.**
 
-## هدف التجربة
-
-الهدف ليس مجرد إنتاج قائمة الأعداد الأولية، بل دراسة أثر كل قرار في الخوارزمية وتمثيل البيانات على الصحة والزمن والذاكرة، مع قياسات قابلة لإعادة الإنتاج وتوثيق كل مرحلة بصورة مستقلة.
+أي نتيجة مستقبلية يجب أن تمر عبر **[RESEARCH_STATUS.md](RESEARCH_STATUS.md)** و**[PRIOR_ART.md](PRIOR_ART.md)** قبل وصفها بأنها تقدم بحثي.
