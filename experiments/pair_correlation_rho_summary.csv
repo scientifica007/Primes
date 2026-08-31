@@ -1,0 +1,8 @@
+metric,value
+count,449.0
+mean_rho,-0.10875280384558483
+median_rho,-0.1091743384272719
+min_rho,-0.14973471368683905
+max_rho,-0.07957265317577814
+observed_lag1,-0.12426651327735908
+min_eigenvalue_pair_correlation_matrix,0.7567502673454832
