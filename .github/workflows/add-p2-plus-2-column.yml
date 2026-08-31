@@ -1,0 +1,59 @@
+name: Add p2 plus 2 column
+
+on:
+  push:
+    branches:
+      - experiment/p2-plus-1-patterns
+    paths:
+      - .github/workflows/add-p2-plus-2-column.yml
+
+permissions:
+  contents: write
+
+jobs:
+  update-csv:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: experiment/p2-plus-1-patterns
+
+      - name: Add p^2 + 2 column
+        shell: bash
+        run: |
+          python - <<'PY'
+          import csv
+          from pathlib import Path
+
+          path = Path('experiments/first_1000_prime_square_plus_one.csv')
+          with path.open('r', encoding='utf-8-sig', newline='') as f:
+              rows = list(csv.reader(f))
+
+          if not rows:
+              raise SystemExit('CSV is empty')
+
+          header = rows[0]
+          col = 'p² + 2'
+          if col not in header:
+              header.append(col)
+              for row in rows[1:]:
+                  if not row:
+                      continue
+                  p2 = int(row[2])
+                  row.append(str(p2 + 2))
+
+          with path.open('w', encoding='utf-8-sig', newline='') as f:
+              writer = csv.writer(f, lineterminator='\n')
+              writer.writerows(rows)
+          PY
+
+      - name: Commit updated CSV
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add experiments/first_1000_prime_square_plus_one.csv
+          if ! git diff --cached --quiet; then
+            git commit -m "Add p^2 + 2 column to prime-square dataset"
+            git push origin HEAD:experiment/p2-plus-1-patterns
+          fi
