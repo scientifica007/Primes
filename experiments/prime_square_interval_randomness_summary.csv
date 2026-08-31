@@ -1,0 +1,17 @@
+﻿metric,observed_value,monte_carlo_p_value,notes
+sample_size_intervals,1000.0,,
+observed_total_primes,3720271.0,,
+cramer_expected_total,3720897.7150809555,,
+global_scale_alpha_observed_over_expected,0.9998315688500613,,
+uncalibrated_total_bias_in_poisson_sigma,-0.3248974326911393,,
+raw_corr_count_vs_interval_length,0.9988862614077445,,
+raw_corr_count_vs_prime_gap,0.8165947076080134,,
+pearson_dispersion_D,239.11270618603976,3.999920001599968e-05,two-sided Monte Carlo; calibrated Poisson
+dispersion_ratio_D_over_df,0.23935205824428404,,df=999
+lag1_autocorrelation_z,-0.13628648804269475,1.999960000799984e-05,two-sided Monte Carlo
+max_abs_autocorrelation_lags_1_20,0.13628648804269475,0.0002599948001039979,upper-tail Monte Carlo with multiple-lag correction
+runs_count_residual_signs,540.0,0.0123997520049599,Monte Carlo
+runs_test_z_classical,2.5027753777868944,,
+corr_z_vs_index_n,0.0266980941191592,0.3958920821583568,two-sided Monte Carlo
+corr_z_vs_prime_gap,0.08653181637718846,0.005719885602287954,two-sided Monte Carlo
+corr_z_vs_interval_length,0.06827455760072756,,
