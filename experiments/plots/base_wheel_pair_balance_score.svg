@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.line{fill:none;stroke:currentColor;stroke-width:2}.dot{fill:currentColor}.dash{stroke-dasharray:6 5}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Base-wheel comparison: dispersion vs correlation balance</text>
+<line class="axis" x1="85" y1="55" x2="85" y2="465"/><line class="axis" x1="85" y1="465" x2="890" y2="465"/>
+<line class="grid" x1="85" y1="465.0" x2="890" y2="465.0"/><text x="77" y="469.0" text-anchor="end">0.98</text>
+<line class="grid" x1="85" y1="383.0" x2="890" y2="383.0"/><text x="77" y="387.0" text-anchor="end">1.58</text>
+<line class="grid" x1="85" y1="301.0" x2="890" y2="301.0"/><text x="77" y="305.0" text-anchor="end">2.52</text>
+<line class="grid" x1="85" y1="219.0" x2="890" y2="219.0"/><text x="77" y="223.0" text-anchor="end">4.04</text>
+<line class="grid" x1="85" y1="137.0" x2="890" y2="137.0"/><text x="77" y="141.0" text-anchor="end">6.46</text>
+<line class="grid" x1="85" y1="55.0" x2="890" y2="55.0"/><text x="77" y="59.0" text-anchor="end">10.34</text>
+<polyline class="line" points="121.6,83.3 184.6,102.3 238.4,95.0 279.1,117.8 314.3,118.0 354.6,134.8 403.1,156.6 462.9,172.4 492.8,177.2 523.4,190.2 553.9,210.2 583.1,217.9 613.5,230.5 643.4,249.4 673.8,259.7 703.2,275.4 733.7,302.0 764.0,323.7 793.5,339.0 823.8,383.1 853.4,390.5" opacity="0.45"/>
+<polyline class="line" points="279.1,128.2 314.3,125.5 354.6,139.1 403.1,151.2 462.9,171.1 492.8,168.7 523.4,195.8 553.9,215.4 583.1,229.5 613.5,244.7 643.4,257.9 673.8,270.3 703.2,302.1 733.7,324.9 764.0,353.8 793.5,370.6 823.8,399.6 853.4,436.7" opacity="0.60"/>
+<polyline class="line" points="403.1,157.2 462.9,179.6 492.8,199.6 523.4,205.8 553.9,222.8 583.1,245.3 613.5,270.8 643.4,281.3 673.8,293.7 703.2,323.3 733.7,348.4 764.0,365.2 793.5,371.3 823.8,390.6 853.4,389.4" opacity="0.75"/>
+<polyline class="line" points="583.1,290.5 613.5,303.7 643.4,296.9 673.8,280.0 703.2,276.6 733.7,247.0 764.0,225.9 793.5,207.2 823.8,178.9 853.4,153.6" opacity="0.90"/>
+<line class="grid" x1="121.6" y1="55" x2="121.6" y2="465"/><text x="121.6" y="487" text-anchor="middle">29</text>
+<line class="grid" x1="279.1" y1="55" x2="279.1" y2="465"/><text x="279.1" y="487" text-anchor="middle">97</text>
+<line class="grid" x1="403.1" y1="55" x2="403.1" y2="465"/><text x="403.1" y="487" text-anchor="middle">251</text>
+<line class="grid" x1="583.1" y1="55" x2="583.1" y2="465"/><text x="583.1" y="487" text-anchor="middle">997</text>
+<line class="grid" x1="673.8" y1="55" x2="673.8" y2="465"/><text x="673.8" y="487" text-anchor="middle">1999</text>
+<line class="grid" x1="764.0" y1="55" x2="764.0" y2="465"/><text x="764.0" y="487" text-anchor="middle">3989</text>
+<line class="grid" x1="853.4" y1="55" x2="853.4" y2="465"/><text x="853.4" y="487" text-anchor="middle">7919</text>
+<text x="460.0" y="522" text-anchor="middle">Tail cutoff Q</text>
+<text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">Balance score B</text>
+<text x="100" y="73" text-anchor="start">base 29</text><text x="100" y="91" text-anchor="start">base 97</text><text x="100" y="109" text-anchor="start">base 251</text><text x="100" y="127" text-anchor="start">base 997</text>
+</svg>
