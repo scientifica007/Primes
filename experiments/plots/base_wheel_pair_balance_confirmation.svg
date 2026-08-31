@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.pt{fill:currentColor}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Confirmed dispersion-correlation balance</text>
+<line class="axis" x1="85" y1="444.2" x2="890" y2="444.2"/>
+<line class="axis" x1="368.8" y1="55" x2="368.8" y2="465"/>
+<circle class="pt" cx="171.7" cy="275.2" r="5"/><text x="179.7" y="268.2">base 251, Q=7919</text>
+<circle class="pt" cx="295.1" cy="245.4" r="5"/><text x="303.1" y="238.4">base 251, Q=6311</text>
+<circle class="pt" cx="803.3" cy="299.0" r="5"/><text x="811.3" y="292.0">base 29, Q=7919</text>
+<circle class="pt" cx="669.9" cy="257.9" r="5"/><text x="677.9" y="250.9">base 97, Q=7919</text>
+<circle class="pt" cx="216.2" cy="92.7" r="5"/><text x="224.2" y="85.7">base 997, Q=1259</text>
+<text x="460.0" y="522" text-anchor="middle">Dispersion discrepancy z</text>
+<text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">Lag-1 discrepancy z</text>
+</svg>
