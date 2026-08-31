@@ -1,0 +1,9 @@
+metric,value
+block_length_H,80000
+block_count,500
+range_start,20000000
+range_end,60000000
+q997_dispersion_ratio_R,1.001575
+q997_lag1_autocorrelation,-0.177155
+short_interval_heuristic_mean_corr,-0.1126394
+mc_lower_tail_p_for_lag1,0.00020
