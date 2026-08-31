@@ -57,3 +57,5 @@ jobs:
             git commit -m "Add p^2 + 2 column to prime-square dataset"
             git push origin HEAD:experiment/p2-plus-1-patterns
           fi
+
+# Triggered after initial workflow registration.
