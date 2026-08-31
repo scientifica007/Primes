@@ -6,6 +6,7 @@ on:
       - experiment/p2-plus-1-patterns
     paths:
       - .github/workflows/generate-prime-square-interval-dataset.yml
+      - experiments/.prime_square_interval_trigger
 
 permissions:
   contents: write
