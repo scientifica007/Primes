@@ -1,0 +1,132 @@
+name: External Prime Sieve Baseline
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      limit:
+        description: "Upper limit N"
+        required: true
+        default: "100000000"
+        type: string
+      repeats:
+        description: "Project and iterator repeats"
+        required: true
+        default: "2"
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  baseline:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install primesieve baseline
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y primesieve libprimesieve-dev pkg-config
+
+      - name: Record environment
+        run: |
+          {
+            echo "Repository: $GITHUB_REPOSITORY"
+            echo "Commit: $GITHUB_SHA"
+            python --version
+            primesieve --version
+            uname -a
+            lscpu
+            echo
+            primesieve --cpu-info || true
+          } | tee external-baseline-environment.txt
+
+      - name: Compile primesieve iterator baseline
+        run: |
+          if pkg-config --exists primesieve; then
+            g++ -O3 -march=native -std=c++17 baseline_primesieve.cpp \
+              $(pkg-config --cflags --libs primesieve) -o baseline_primesieve
+          else
+            g++ -O3 -march=native -std=c++17 baseline_primesieve.cpp \
+              -lprimesieve -o baseline_primesieve
+          fi
+
+      - name: Run project configurations
+        env:
+          LIMIT: ${{ inputs.limit || '100000000' }}
+          REPEATS: ${{ inputs.repeats || '2' }}
+        run: |
+          python benchmark_project_external_baseline.py "$LIMIT" --repeats "$REPEATS" \
+            | tee project-baseline.txt
+
+      - name: Run primesieve iterator equivalent workload
+        env:
+          LIMIT: ${{ inputs.limit || '100000000' }}
+          REPEATS: ${{ inputs.repeats || '2' }}
+        run: |
+          : > primesieve-iterator-baseline.txt
+          for i in $(seq 1 "$REPEATS"); do
+            ./baseline_primesieve "$LIMIT" | tee -a primesieve-iterator-baseline.txt
+          done
+
+      - name: Run primesieve single-thread count throughput
+        env:
+          LIMIT: ${{ inputs.limit || '100000000' }}
+        run: |
+          NO_STATUS=""
+          if primesieve --help 2>&1 | grep -q -- '--no-status'; then
+            NO_STATUS="--no-status"
+          fi
+          : > primesieve-count-baseline.txt
+          for i in 1 2 3; do
+            primesieve "$LIMIT" --count --threads=1 --time $NO_STATUS \
+              | tee -a primesieve-count-baseline.txt
+          done
+
+      - name: Verify expected count
+        env:
+          LIMIT: ${{ inputs.limit || '100000000' }}
+        run: |
+          if [ "$LIMIT" = "100000000" ]; then
+            grep -q 'count=5761455' project-baseline.txt
+            grep -q 'count=5761455' primesieve-iterator-baseline.txt
+          fi
+
+      - name: Summary
+        run: |
+          {
+            echo "## External baseline"
+            echo
+            echo "### Project"
+            echo '```text'
+            cat project-baseline.txt
+            echo '```'
+            echo
+            echo "### primesieve iterator: equivalent enumeration workload"
+            echo '```text'
+            cat primesieve-iterator-baseline.txt
+            echo '```'
+            echo
+            echo "### primesieve count: throughput ceiling"
+            echo '```text'
+            cat primesieve-count-baseline.txt
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: external-prime-baseline-${{ github.run_number }}
+          path: |
+            project-baseline.txt
+            primesieve-iterator-baseline.txt
+            primesieve-count-baseline.txt
+            external-baseline-environment.txt
+          retention-days: 90
