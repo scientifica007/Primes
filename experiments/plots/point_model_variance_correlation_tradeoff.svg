@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.solid{fill:none;stroke:currentColor;stroke-width:2}.dash{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:7 5}.dot{fill:currentColor}.open{fill:none;stroke:currentColor;stroke-width:2}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Variance-correlation tradeoff and pair-kernel correction</text>
+<line class="axis" x1="85" y1="55" x2="85" y2="465"/>
+<line class="axis" x1="85" y1="465" x2="890" y2="465"/>
+<polyline class="solid" points="841.9,73.3 833.7,105.4 750.8,172.4 604.4,308.0 512.1,386.5 469.4,418.6 452.8,433.3 436.5,440.0 432.3,443.3 427.8,445.1 425.7,446.0 425.1,446.6 424.8,446.7"/>
+<circle class="dot" cx="841.9" cy="73.3" r="2.8"/><circle class="dot" cx="833.7" cy="105.4" r="2.8"/><circle class="dot" cx="750.8" cy="172.4" r="2.8"/><circle class="dot" cx="604.4" cy="308.0" r="2.8"/><circle class="dot" cx="512.1" cy="386.5" r="2.8"/><circle class="dot" cx="469.4" cy="418.6" r="2.8"/><circle class="dot" cx="452.8" cy="433.3" r="2.8"/><circle class="dot" cx="436.5" cy="440.0" r="2.8"/><circle class="dot" cx="432.3" cy="443.3" r="2.8"/><circle class="dot" cx="427.8" cy="445.1" r="2.8"/><circle class="dot" cx="425.7" cy="446.0" r="2.8"/><circle class="dot" cx="425.1" cy="446.6" r="2.8"/><circle class="dot" cx="424.8" cy="446.7" r="2.8"/>
+<text x="846.9" y="68.3">g=1</text><text x="755.8" y="167.4">g=4</text><text x="517.1" y="381.5">g=16</text><text x="437.3" y="438.3">g=256</text><text x="429.8" y="441.7">g=32768</text>
+<circle class="open" cx="154.0" cy="183.9" r="5"/><text x="161.0" y="176.9">observed</text>
+<circle class="open" cx="393.4" cy="183.9" r="5"/><text x="400.4" y="176.9">theory rho1</text>
+<circle class="open" cx="416.9" cy="181.5" r="6"/><text x="423.9" y="197.5">pair-kernel model</text>
+<text x="460.0" y="522" text-anchor="middle">rho(1)</text>
+<text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">dispersion R</text>
+</svg>
