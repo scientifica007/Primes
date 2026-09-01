@@ -1,0 +1,673 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb,booktabs,longtable,array}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{arabic}
+\setotherlanguage{english}
+\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+\usepackage{geometry}
+\geometry{margin=2.1cm}
+\usepackage{hyperref}
+
+\title{إدخال Fine Spectrum في الإحداثي \(u\) إلى النموذج النقطي الفعلي}
+\author{مشروع تجربة البحث عن الأعداد الأولية}
+\date{2026-09-01}
+
+\begin{document}
+\maketitle
+
+\section{السؤال}
+
+في التجربة السابقة نجح fine spectrum واحد، مبني في الإحداثي المحلي
+\[
+u
+=
+n+
+\frac{x-p_n^2}
+{p_{n+1}^2-p_n^2},
+\]
+في نقل pair kernel النظري من نطاق قرب \(10^7\) إلى نطاق قرب \(10^{12}\)
+من غير إعادة ملاءمة للشكل.
+
+السؤال الحالي أقوى:
+
+\begin{quote}
+هل يمكن استعمال spectrum نفسه داخل النموذج النقطي الحقيقي فوق ناجي
+random sieve، بحيث يولد بنفسه التشتت والارتباطات التي نراها في
+الأوليات الفعلية؟
+\end{quote}
+
+لا نعيد ملاءمة spectrum على بيانات الأوليات، ولا نضيف معلومات \(k=3\).
+
+\section{العينة والنموذج الأساسي}
+
+استعملنا نفس العينة:
+\[
+p_n\ge4001,
+\]
+وعددها:
+\[
+450
+\]
+فترة:
+\[
+p_n^2<x<p_{n+1}^2.
+\]
+
+الغربال النقطي هو:
+
+\[
+q_0=7,
+\qquad
+Q=7919.
+\]
+
+نثبت عجلة \(7\)، ثم لكل أولي:
+\[
+7<q\le7919
+\]
+نختار residue class محظورًا عشوائيًا، ونزيل المواقع الواقعة فيه.
+
+بعد ذلك نقسم كل prime-square interval إلى:
+\[
+64
+\]
+خلية متساوية في الإحداثي \(u\).
+
+أي أن الخلايا ليست متساوية الطول في \(x\)، لكنها دائمًا متساوية في
+الموضع النسبي داخل الفترة.
+
+\section{Spectrum المجمد}
+
+استعملنا spectrum uniform الذي استخرجناه في التجربة السابقة من لوحة واحدة
+قرب:
+\[
+X\approx2\times10^7.
+\]
+
+لم نعد NNLS في هذه التجربة.
+
+إذا كانت أوزان spectrum هي:
+\[
+v_s,
+\]
+نبني حقلًا محليًا:
+
+\[
+F(u)
+=
+\sum_s
+\sqrt{v_s}\,
+\varepsilon_{s,b}\,
+h_{s,b}(u),
+\]
+حيث:
+\[
+\varepsilon_{s,b}\in\{-1,+1\}
+\]
+مستقلة، و\(h_{s,b}\) موجات Haar محلية.
+
+نختار أيضًا translation عشوائيًا من quarter-shifts لكل مقياس، كما في بناء
+covariance المرجعية.
+
+\section{كيف يؤثر الحقل على ناجي الغربال؟}
+
+إذا كانت الفترة \(i\) تحتاج احتمال اختيار أساسي:
+\[
+\theta_i,
+\]
+فداخل خلية \(u\) نستعمل:
+
+\[
+p(u)
+=
+\theta_i+aF(u).
+\]
+
+المعامل الجديد الوحيد هو:
+\[
+a.
+\]
+
+لا يتغير spectrum نفسه.
+
+إذا احتوت الخلية بعد random sieve على \(S\) ناجيًا، يكون العدد المتوقع
+اختياره:
+
+\[
+p(u)S.
+\]
+
+ثم نحوله إلى عدد صحيح بواسطة randomized rounding غير متحيز.
+
+خلال جميع محاكاة الاختبار بقي:
+
+\[
+0<p(u)<1,
+\]
+ومن ثم:
+
+\[
+\boxed{\text{clip fraction}=0.}
+\]
+
+\section{فصل التدريب والاختبار}
+
+ولدنا:
+\[
+40
+\]
+realizations مستقلة من random sieve.
+
+استعملنا أول:
+\[
+12
+\]
+لتحديد \(a\).
+
+واستعملنا:
+\[
+28
+\]
+realizations محجوزة للاختبار.
+
+لكل realization اختبار ولدنا:
+\[
+24
+\]
+حقولًا محلية مستقلة، أي:
+
+\[
+\boxed{672}
+\]
+محاكاة اختبار.
+
+\section{المعامل الوحيد}
+
+حددنا \(a\) باستخدام:
+\[
+R
+\]
+فقط في training set.
+
+ولكي لا نرفع \(R\) قليلًا بسبب integer rounding، حسبنا عند التدريب
+التباين المتوقع بعد randomized rounding أيضًا.
+
+النتيجة:
+
+\[
+\boxed{
+a=0.00275046.
+}
+\]
+
+لم يدخل:
+\[
+\rho_1,\rho_2,\ldots
+\]
+ولا runs ولا triples في هذه المعايرة.
+
+\section{نتيجة التشتت}
+
+في البيانات:
+
+\[
+R_{\rm obs}
+=
+0.380332.
+\]
+
+وفي \(672\) محاكاة محجوزة:
+
+\[
+\boxed{
+R_{\rm model}
+=
+0.383931
+\pm
+0.040362.
+}
+\]
+
+وقيمة الاختبار:
+
+\[
+\boxed{
+p=0.964.
+}
+\]
+
+إذن spectrum المجمد يستطيع إضافة مقدار التباين الناقص في held-out data
+باستعمال معامل شدة واحد فقط.
+
+\section{الارتباط الأول}
+
+البيانات تعطي:
+
+\[
+\rho_1^{\rm obs}
+=
+-0.123691.
+\]
+
+نظرية الفترات القصيرة:
+
+\[
+\rho_1^{\rm theory}
+=
+-0.108753.
+\]
+
+والنموذج النقطي الجديد:
+
+\[
+\boxed{
+\rho_1^{u}
+=
+-0.103381.
+}
+\]
+
+مع:
+
+\[
+p=0.759
+\]
+للقيمة المرصودة تحت توزيع المحاكاة.
+
+إذن lag 1 لا يرفض النموذج.
+
+\section{الارتباط الثاني}
+
+البيانات:
+
+\[
+\rho_2^{\rm obs}
+=
+-0.081777,
+\]
+
+والنظرية:
+
+\[
+\rho_2^{\rm theory}
+=
+-0.044383,
+\]
+
+بينما النموذج:
+
+\[
+\rho_2^u
+=
+-0.030272.
+\]
+
+القيمة المرصودة ما زالت غير شاذة إحصائيًا تحت المحاكاة، لكن المتوسط يكشف
+أن pair kernel النموذجية لم تصل بعد إلى target النظري كاملًا.
+
+\section{اختبار منحنى } \texorpdfstring{\(\rho(k)\)}{rho(k)}
+
+اختبرنا:
+
+\[
+k=1,\ldots,20.
+\]
+
+متوسط kernel RMSE للنموذج مقارنة بـshort-interval theory:
+
+\[
+\boxed{
+0.008749.
+}
+\]
+
+أما اختبار المنحنى المرصود كله بالنسبة إلى توزيع النموذج فأعطى:
+
+\[
+p_{\rm RMS}
+=
+0.364,
+\]
+
+و:
+
+\[
+p_{\rm max}
+=
+0.171.
+\]
+
+إذن منحنى البيانات الواحد لا يرفض النموذج.
+
+لكن هذا لا يعني أن متوسط النموذج يطابق target pair kernel بدقة؛
+فالـRMSE ما زال أكبر من bridge model.
+
+\section{ماذا أصلح spectrum بالفعل؟}
+
+هذه المقارنة هي الأهم:
+
+\begin{center}
+\begin{tabular}{lrrr}
+\toprule
+المرحلة & \(R\) & \(\rho_1\) & kernel RMSE\\
+\midrule
+raw random sieve/quota
+& 0.306810
+& -0.108962
+& 0.010545\\
+بعد frozen \(u\)-field قبل rounding
+& 0.379439
+& -0.104493
+& 0.008776\\
+بعد integer rounding
+& 0.383931
+& -0.103381
+& 0.008749\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+إذن الحقل:
+
+\begin{enumerate}
+\item رفع \(R\) من \(0.307\) تقريبًا إلى القيمة المطلوبة.
+\item حسن kernel RMSE من:
+\[
+0.010545
+\]
+إلى:
+\[
+0.008749.
+\]
+\end{enumerate}
+
+أي تحسن بنحو:
+
+\[
+\boxed{17\%}.
+\]
+
+كما أن integer rounding ليس مصدر الخلل الباقي؛ فالـRMSE قبل التقريب وبعده
+تكاد تكون نفسها.
+
+\section{مقارنة بالآليات السابقة}
+
+\begin{center}
+\begin{tabular}{lrrrr}
+\toprule
+النموذج & \(R\) & \(\rho_1\) & \(\rho_2\) & kernel RMSE\\
+\midrule
+raw random sieve
+&0.3068&-0.1090&-0.0271&0.01055\\
+physical local multiscale
+&0.3831&-0.1167&-0.0338&0.00813\\
+normalized \(u\) local multiscale
+&0.3839&-0.1034&-0.0303&0.00875\\
+pair-kernel bridge
+&0.3810&-0.1073&-0.0375&0.00429\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+إذن النتيجة دقيقة:
+
+\[
+\boxed{
+\text{normalized }u
+\text{ لم يتفوق بعد على physical local model داخل مولد النقاط.}
+}
+\]
+
+بل physical local model أفضل قليلًا في kernel RMSE في هذه العينة.
+
+\section{التناقض الظاهري مع تجربة النقل السابقة}
+
+في تجربة theory transfer السابقة، الانتقال من coordinate الفيزيائي إلى
+\(u\) خفض متوسط RMSE من:
+
+\[
+0.02595
+\]
+إلى:
+
+\[
+0.000488.
+\]
+
+أي تحسن بنحو:
+
+\[
+53
+\]
+مرة.
+
+لكن داخل point generator:
+
+\[
+0.00813
+\longrightarrow
+0.00875
+\]
+
+لا يمثل تحسنًا.
+
+إذن:
+
+\[
+\boxed{
+\text{حل مشكلة coordinate لا يحل وحده مشكلة مولد النقاط.}
+}
+\]
+
+هذا فصل مهم بين مستويين مختلفين:
+
+\[
+\text{تمثيل covariance نظرية}
+\]
+و:
+\[
+\text{آلية تولد covariance بعد random sieve والاختيار النقطي.}
+\]
+
+\section{لماذا يحدث ذلك؟}
+
+الحقل المجمد صمم لكي يحمل \emph{pair kernel الكلي} للنظرية.
+
+لكننا نضيفه إلى random sieve الذي يملك أصلًا pair structure خاصة به.
+
+فعليًا، ما يحتاجه النموذج ليس نسخة جديدة من target kernel كاملة، بل
+\emph{الجزء المتبقي بعد طرح مساهمة random sieve}.
+
+بصورة تقريبية، إذا كان:
+
+\[
+R_{\rm target}\rho_{\rm target}(k)
+\]
+هو covariance المطلوبة، و:
+
+\[
+R_{\rm sieve}\rho_{\rm sieve}(k)
+\]
+هو ما يولده الغربال، فإن الحقل الإضافي ينبغي أن يستهدف:
+
+\[
+\boxed{
+C_{\rm residual}(k)
+=
+R_{\rm target}\rho_{\rm target}(k)
+-
+R_{\rm sieve}\rho_{\rm sieve}(k).
+}
+\]
+
+وإذا كان التباين الناقص:
+
+\[
+R_{\rm residual}
+=
+R_{\rm target}-R_{\rm sieve},
+\]
+فإن correlation التي ينبغي أن يحملها الحقل المتبقي هي:
+
+\[
+\boxed{
+\rho_{\rm residual}(k)
+=
+\frac{
+R_{\rm target}\rho_{\rm target}(k)
+-
+R_{\rm sieve}\rho_{\rm sieve}(k)
+}{
+R_{\rm target}-R_{\rm sieve}
+}.
+}
+\]
+
+هذه ليست معلومة triples؛ ما زلنا بالكامل في طبقة الأزواج.
+
+\section{runs والثلاثيات}
+
+لم ندخل هذه المقاييس في التدريب.
+
+البيانات:
+
+\[
+\mathrm{runs}_{\rm obs}=256.
+\]
+
+النموذج:
+
+\[
+\mathrm{runs}_{u}
+=
+242.62\pm12.32,
+\]
+
+مع:
+
+\[
+p=0.311.
+\]
+
+والثلاثيات الرتيبة:
+
+\[
+145
+\]
+في البيانات، مقابل:
+
+\[
+142.53\pm10.04
+\]
+في النموذج، مع:
+
+\[
+p=0.838.
+\]
+
+كما أن أنماط الإشارة الثمانية:
+\[
+000,\ldots,111
+\]
+لم تعط فشلًا؛ أصغر قيمة \(p\) كانت نحو:
+
+\[
+0.247.
+\]
+
+إذن لا يزال لا يوجد سبب تجريبي للانتقال إلى \(k=3\).
+
+\section{اختبار robustness لتوزيع معاملات Haar}
+
+استبدلنا معاملات:
+
+\[
+\varepsilon\in\{-1,+1\}
+\]
+بمعاملات Gaussian مع إبقاء covariance spectrum نفسها.
+
+لم يتحسن kernel بصورة مهمة؛ بقي RMSE نحو:
+
+\[
+0.00884.
+\]
+
+إذن الخلل المتبقي ليس مجرد اختيار Rademacher بدل Gaussian.
+
+\section{الحكم}
+
+نجحت التجربة جزئيًا.
+
+النجاح:
+
+\[
+\boxed{
+\text{fine spectrum المجمد في }u
+\text{ يعمل كآلية نقطية حقيقية ويملأ التباين الناقص بلا overfitting للـlags.}
+}
+\]
+
+وهو يحسن pair kernel الخام.
+
+لكن الفشل المهم:
+
+\[
+\boxed{
+\text{نقل spectrum الكلي للنظرية ليس هو التصحيح الصحيح بعد وجود random sieve.}
+}
+\]
+
+الفرق المتبقي أصبح الآن محددًا رياضيًا أكثر من السابق:
+
+\[
+\boxed{
+\text{نحتاج spectrum للـresidual covariance، لا spectrum للـtotal covariance.}
+}
+\]
+
+\section{السؤال التالي}
+
+الخطوة التالية الطبيعية هي بناء:
+
+\[
+\rho_{\rm residual}(k)
+\]
+
+من:
+
+\begin{enumerate}
+\item short-interval pair theory؛
+\item covariance التي يولدها random sieve نفسه؛
+\item مقدار التباين الناقص \(R_{\rm target}-R_{\rm sieve}\).
+\end{enumerate}
+
+ثم نمثل هذا residual kernel في الإحداثي \(u\) بواسطة Haar محلية،
+ونجمد spectrum الجديدة، ثم نعيد اختبار point generator.
+
+إذا نجح ذلك، سيكون التصحيح مستمدًا من:
+
+\[
+\boxed{
+\text{theory} - \text{sieve structure}
+}
+\]
+
+بدل أن نطلب من حقل إضافي أن يعيد بناء شيء بناه الغربال جزئيًا أصلًا.
+
+\section{ملفات التجربة}
+
+\begin{itemize}
+\item \texttt{normalized\_u\_point\_model\_summary\_q7.csv}
+\item \texttt{normalized\_u\_point\_model\_rho\_q7.csv}
+\item \texttt{normalized\_u\_point\_model\_global\_rho\_test\_q7.csv}
+\item \texttt{normalized\_u\_point\_model\_sign\_triples\_q7.csv}
+\item \texttt{normalized\_u\_point\_model\_decomposition\_q7.csv}
+\item \texttt{normalized\_u\_point\_model\_stage\_comparison\_q7.csv}
+\item \texttt{analyze\_normalized\_u\_point\_model.py}
+\item \texttt{plots/normalized\_u\_point\_model\_full\_rho.svg}
+\item \texttt{plots/normalized\_u\_point\_model\_R\_kernel\_tradeoff.svg}
+\item \texttt{plots/normalized\_u\_theory\_vs\_point\_model\_gap.svg}
+\end{itemize}
+
+\end{document}
