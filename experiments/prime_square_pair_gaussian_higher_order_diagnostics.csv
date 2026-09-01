@@ -1,0 +1,5 @@
+metric,observed,pair_gaussian_mean,pair_gaussian_sd,two_sided_p
+min_eigenvalue_covariance,0.1490334393681138,,,
+runs,256.0,240.99442,10.323408367337136,0.14803703925921483
+monotone_triples,145.0,144.55396,8.857732074676347,1.0
+turning_triples,303.0,303.44604,8.857732074676345,1.0
