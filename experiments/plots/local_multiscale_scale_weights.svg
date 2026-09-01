@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="520" viewBox="0 0 900 520">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.solid{fill:none;stroke:currentColor;stroke-width:2}.dash{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:7 5}.dot{fill:currentColor}</style>
+<text class="title" x="450.0" y="28" text-anchor="middle">Local Haar scales selected by the theoretical pair kernel</text>
+<line class="axis" x1="90" y1="55" x2="90" y2="445"/>
+<line class="axis" x1="90" y1="445" x2="870" y2="445"/>
+<line class="grid" x1="90" y1="445.0" x2="870" y2="445.0"/>
+<text x="82" y="449.0" text-anchor="end">0.00</text>
+<line class="grid" x1="90" y1="367.0" x2="870" y2="367.0"/>
+<text x="82" y="371.0" text-anchor="end">0.74</text>
+<line class="grid" x1="90" y1="289.0" x2="870" y2="289.0"/>
+<text x="82" y="293.0" text-anchor="end">1.48</text>
+<line class="grid" x1="90" y1="211.0" x2="870" y2="211.0"/>
+<text x="82" y="215.0" text-anchor="end">2.21</text>
+<line class="grid" x1="90" y1="133.0" x2="870" y2="133.0"/>
+<text x="82" y="137.0" text-anchor="end">2.95</text>
+<line class="grid" x1="90" y1="55.0" x2="870" y2="55.0"/>
+<text x="82" y="59.0" text-anchor="end">3.69</text>
+<polyline class="solid" points="90.0,83.9 246.0,428.7 402.0,422.4 558.0,435.7 714.0,442.0 870.0,443.6"/>
+<circle class="dot" cx="90.0" cy="83.9" r="3.5"/>
+<text x="90.0" y="467" text-anchor="middle">65,536</text>
+<circle class="dot" cx="246.0" cy="428.7" r="3.5"/>
+<text x="246.0" y="467" text-anchor="middle">131,072</text>
+<circle class="dot" cx="402.0" cy="422.4" r="3.5"/>
+<text x="402.0" y="467" text-anchor="middle">262,144</text>
+<circle class="dot" cx="558.0" cy="435.7" r="3.5"/>
+<text x="558.0" y="467" text-anchor="middle">524,288</text>
+<circle class="dot" cx="714.0" cy="442.0" r="3.5"/>
+<text x="714.0" y="467" text-anchor="middle">1,048,576</text>
+<circle class="dot" cx="870.0" cy="443.6" r="3.5"/>
+<text x="870.0" y="467" text-anchor="middle">2,097,152</text>
+<text x="450.0" y="502" text-anchor="middle">Haar support scale in integers (log spacing)</text>
+<text transform="translate(20 260.0) rotate(-90)" text-anchor="middle">variance weight</text>
+</svg>
