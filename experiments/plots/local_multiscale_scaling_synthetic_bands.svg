@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.line{fill:none;stroke:currentColor;stroke-width:2}.dash{fill:none;stroke:currentColor;stroke-width:1.5;stroke-dasharray:6 5}.dot{fill:currentColor}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Dimensionless multiscale spectrum in equal-H theory controls</text>
+<line class="axis" x1="90" y1="55" x2="90" y2="465"/>
+<line class="axis" x1="90" y1="465" x2="890" y2="465"/>
+<line class="grid" x1="90" y1="448.6" x2="890" y2="448.6"/>
+<text x="82" y="452.6" text-anchor="end">0.1</text>
+<line class="grid" x1="90" y1="366.6" x2="890" y2="366.6"/>
+<text x="82" y="370.6" text-anchor="end">0.2</text>
+<line class="grid" x1="90" y1="284.6" x2="890" y2="284.6"/>
+<text x="82" y="288.6" text-anchor="end">0.3</text>
+<line class="grid" x1="90" y1="202.6" x2="890" y2="202.6"/>
+<text x="82" y="206.6" text-anchor="end">0.4</text>
+<line class="grid" x1="90" y1="120.6" x2="890" y2="120.6"/>
+<text x="82" y="124.6" text-anchor="end">0.5</text>
+<text x="90.0" y="487" text-anchor="middle">250</text>
+<text x="490.0" y="487" text-anchor="middle">500</text>
+<text x="890.0" y="487" text-anchor="middle">1000</text>
+<polyline class="line" points="90.0,74.9 490.0,79.6 890.0,82.9" opacity="0.45"/>
+<circle class="dot" cx="90.0" cy="74.9" r="3"/>
+<circle class="dot" cx="490.0" cy="79.6" r="3"/>
+<circle class="dot" cx="890.0" cy="82.9" r="3"/>
+<text x="105" y="73">L/H&lt;2</text>
+<polyline class="line" points="90.0,356.3 490.0,353.9 890.0,350.1" opacity="0.60"/>
+<circle class="dot" cx="90.0" cy="356.3" r="3"/>
+<circle class="dot" cx="490.0" cy="353.9" r="3"/>
+<circle class="dot" cx="890.0" cy="350.1" r="3"/>
+<text x="105" y="91">2&lt;=L/H&lt;4</text>
+<polyline class="line" points="90.0,423.4 490.0,423.9 890.0,425.9" opacity="0.75"/>
+<circle class="dot" cx="90.0" cy="423.4" r="3"/>
+<circle class="dot" cx="490.0" cy="423.9" r="3"/>
+<circle class="dot" cx="890.0" cy="425.9" r="3"/>
+<text x="105" y="109">4&lt;=L/H&lt;8</text>
+<polyline class="line" points="90.0,447.8 490.0,445.0 890.0,443.5" opacity="0.90"/>
+<circle class="dot" cx="90.0" cy="447.8" r="3"/>
+<circle class="dot" cx="490.0" cy="445.0" r="3"/>
+<circle class="dot" cx="890.0" cy="443.5" r="3"/>
+<text x="105" y="127">L/H&gt;=8</text>
+<text x="460.0" y="522" text-anchor="middle">X/H</text>
+<text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">fraction of variance contribution</text>
+</svg>
