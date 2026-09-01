@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.line{fill:none;stroke:currentColor;stroke-width:2}.dash{stroke-dasharray:7 5}.dot{fill:currentColor}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Weighted prime counts: empirical correlation vs Leung 2026</text>
+<line class="axis" x1="85" y1="55" x2="85" y2="465"/><line class="axis" x1="85" y1="465" x2="890" y2="465"/>
+<line class="grid" x1="85" y1="465.0" x2="890" y2="465.0"/><text x="77" y="469.0" text-anchor="end">-0.227</text>
+<line class="grid" x1="85" y1="383.0" x2="890" y2="383.0"/><text x="77" y="387.0" text-anchor="end">-0.169</text>
+<line class="grid" x1="85" y1="301.0" x2="890" y2="301.0"/><text x="77" y="305.0" text-anchor="end">-0.111</text>
+<line class="grid" x1="85" y1="219.0" x2="890" y2="219.0"/><text x="77" y="223.0" text-anchor="end">-0.053</text>
+<line class="grid" x1="85" y1="137.0" x2="890" y2="137.0"/><text x="77" y="141.0" text-anchor="end">0.005</text>
+<line class="grid" x1="85" y1="55.0" x2="890" y2="55.0"/><text x="77" y="59.0" text-anchor="end">0.063</text>
+<line class="grid" x1="85.0" y1="55" x2="85.0" y2="465"/><text x="85.0" y="487" text-anchor="middle">1</text>
+<line class="grid" x1="487.5" y1="55" x2="487.5" y2="465"/><text x="487.5" y="487" text-anchor="middle">2</text>
+<line class="grid" x1="890.0" y1="55" x2="890.0" y2="465"/><text x="890.0" y="487" text-anchor="middle">3</text>
+<polyline class="line" points="85.0,343.2 487.5,221.4 890.0,198.1"/><polyline class="line dash" points="85.0,322.3 487.5,211.5 890.0,187.9"/>
+<polyline class="line" points="85.0,383.6 487.5,245.8 890.0,175.2"/><polyline class="line dash" points="85.0,348.1 487.5,221.2 890.0,194.2"/>
+<polyline class="line" points="85.0,429.1 487.5,167.3 890.0,89.2"/><polyline class="line dash" points="85.0,382.5 487.5,234.2 890.0,202.6"/>
+<polyline class="line" points="85.0,316.5 487.5,144.5 890.0,188.5"/><polyline class="line dash" points="85.0,430.8 487.5,252.4 890.0,214.5"/>
+<text x="99" y="73">emp δ=0.001</text><text x="99" y="90">Leung δ=0.001</text><text x="99" y="107">emp δ=0.002</text><text x="99" y="124">Leung δ=0.002</text><text x="99" y="141">emp δ=0.004</text><text x="99" y="158">Leung δ=0.004</text><text x="99" y="175">emp δ=0.008</text><text x="99" y="192">Leung δ=0.008</text>
+<text x="460.0" y="522" text-anchor="middle">Separation in interval lengths</text><text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">Correlation</text>
+</svg>
