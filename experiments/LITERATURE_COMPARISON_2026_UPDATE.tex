@@ -1,0 +1,53 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{arabic}
+\setotherlanguage{english}
+\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+\usepackage{geometry}
+\geometry{margin=2.2cm}
+\usepackage{hyperref}
+\title{تحديث مراجعة الأدبيات: نتائج 2025--2026 الأقرب إلى تجاربنا}
+\date{2026-09-01}
+\begin{document}
+\maketitle
+
+\section{Leung 2026: أقرب نتيجة مباشرة للارتباط السلبي الذي قسناه}
+نشر Sun--Kai Leung في Advances in Mathematics (2026) بحثًا بعنوان
+\emph{Joint distribution of primes in multiple short intervals}.
+تحت فرضية ريمان وفرضية الاستقلال الخطي لأصفار دالة زيتا، يثبت البحث أن العد الموزون للأوليات في عدة فترات قصيرة يتبع توزيعًا غاوسيًا متعدد المتغيرات مع \emph{ارتباطات سالبة ضعيفة}.
+
+هذا قريب جدًا من ملاحظتنا التجريبية أن الفترات المتجاورة تحمل lag-1 سالبًا، وأن نموذج الاستقلال يفشل حتى عندما يطابق مقدار التشتت. الفرق أن بحث Leung يتعامل مع صياغة حدية موزونة وفروض تحليلية، بينما فتراتنا محدودة ومتغيرة الطول ومربوطة بمربعات أوليات متتالية.
+
+لذلك ينبغي من الآن وصف ``الارتباط السلبي بين الفترات'' في مشروعنا بأنه إعادة اكتشاف تجريبية لظاهرة لها الآن نتيجة نظرية حديثة مباشرة الصلة، لا مجرد صلة بعيدة عبر Montgomery--Soundararajan.
+
+مرجع:
+\url{https://doi.org/10.1016/j.aim.2026.110847}
+
+\section{Leung 2025: mixed moments وPoisson point process}
+في بحث \emph{Pseudorandomness of primes at large scales} (Quarterly Journal of Mathematics, 2025)، يفترض Leung صيغة موحدة من حدس prime $k$-tuple ويحسب mixed moments لأعداد الأوليات في فترات قصيرة منفصلة وفي متتاليات حسابية، ويحصل في النظام المناسب على تقارب إلى Poisson point process.
+
+هذه النتيجة مهمة لسؤال مشروعنا ``ما أقل قدر من البنية اللازمة لتقليد الأوليات؟'' لأنها تبين أن معلومات $k$-tuple الموحدة تستطيع، في مقاييس معينة، تحديد إحصاءات مشتركة أعلى من مجرد المتوسط والتباين.
+
+مرجع:
+\url{https://doi.org/10.1093/qmath/haae069}
+
+\section{ما الذي يتغير في تقييم مشروعنا؟}
+بعد هذه الإضافة تصبح الخريطة أدق:
+
+\begin{itemize}
+\item under-dispersion: له سلف واضح في Montgomery--Soundararajan وأعمال تالية.
+\item negative correlations بين عدة فترات: له الآن نظير حديث مباشر في Leung 2026.
+\item الانتقال من pairs إلى triples ثم $k$-tuples: هو داخل الإطار الكلاسيكي لـHardy--Littlewood، وتظهر أهميته أيضًا في mixed moments الحديثة.
+\item ما يبقى خاصًا بتجربتنا هو بروتوكول المعايرة العددي: فترات مربعات الأوليات، fixed wheel cutoff، random tail، per-interval thinning، ومسح $q_0$ باستخدام $R$ وlag-1 وruns معًا.
+\end{itemize}
+
+\section{تنبيه بخصوص الجدة}
+لم أعثر في هذه المراجعة على ورقة تستخدم بالضبط مقياس التوازن الخاص بنا عبر cutoff العجلة على فترات
+\[
+(p_n^2,p_{n+1}^2),
+\]
+لكن وجود أعمال حديثة قوية عن التوزيع المشترك والـmixed moments يعني أن أي ادعاء أصالة يجب أن يُبنى على مقارنة تقنية أدق مع هذه الأدبيات، لا على مجرد ملاحظة ارتباط سلبي أو نجاح نموذج $k$-tuple.
+
+\end{document}
