@@ -1,0 +1,183 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb,booktabs,longtable,array}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{arabic}
+\setotherlanguage{english}
+\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+\usepackage{geometry}
+\geometry{margin=2.1cm}
+\usepackage{hyperref}
+
+\title{مقارنة مشروع تجربة البحث عن الأعداد الأولية بالأدبيات الرياضية}
+\author{مراجعة أدبية وتجريبية}
+\date{2026-09-01}
+
+\begin{document}
+\maketitle
+
+\section{الغرض}
+الهدف هو تحديد موقع ما فعلناه بالنسبة إلى الأدبيات، وفصل أربعة أشياء: إعادة اكتشاف نتيجة كلاسيكية، تنفيذ تجريبي لفكرة معروفة، تصميم تجريبي خاص بالمشروع، وسؤال قد يصبح بحثيًا من غير ادعاء الجدة قبل مراجعة أوسع.
+
+\section{العجلات والمربعات}
+فكرة العجلات ذات الأطوال
+\[
+2,3,5,7,\ldots
+\]
+هي تمثيل ميكانيكي لغربال إراتوستينس وللفئات الباقية modulo الأوليات. وإذا كان
+\[
+P(y)=\prod_{p\le y}p,
+\]
+فنسبة الفئات التي تبقى بعد حذف مضاعفات الأوليات حتى $y$ هي
+\[
+\frac{\varphi(P(y))}{P(y)}
+=
+\prod_{p\le y}\left(1-\frac1p\right).
+\]
+ظهور $p^2$ طبيعي أيضًا: إذا غربلنا بالعوامل الأولية حتى $p$ فقد حُسمت المركبات تحت مربع الأولي التالي. لذلك هذه المرحلة إعادة اكتشاف كلاسيكية مفيدة تعليميًا، لا نتيجة جديدة.
+
+\section{الفترات بين مربعات أوليين متتاليين}
+السلسلة
+\[
+a_n=\pi(p_{n+1}^2)-\pi(p_n^2)
+\]
+معروفة ومسجلة في OEIS تحت A050216، وهي الدالة المرتبطة بحدسية Brocard. كما يذكر سجل OEIS العلاقة المباشرة مع خطوة غربال إراتوستينس: بعد خطوة $p_n$ تكون المركبات تحت $p_{n+1}^2$ قد كُشفت.
+
+إذن اختيارنا للفترات
+\[
+(p_n^2,p_{n+1}^2)
+\]
+ليس كائنًا جديدًا، لكنه اختيار طبيعي جدًا للربط بين الغربال والفترات القصيرة. تحليلنا الإحصائي لسلسلة هذه الأعداد هو الجزء الخاص بتجربتنا.
+
+\section{Cram\'er والعشوائية الساذجة}
+النموذج الذي يختار العدد $n$ باحتمال يقارب
+\[
+\frac1{\log n}
+\]
+مع الاستقلال هو في جوهره نموذج Cram\'er. الأدبيات تعرف أن هذا النموذج يلتقط الكثافة العامة جيدًا لكنه يفشل في البنية المحلية؛ لأنه يتجاهل تحيزات الأوليات modulo الأعداد الأولية الصغيرة.
+
+نتيجتنا بأن المتوسط الكلي جيد جدًا بينما التشتت الحقيقي أصغر من نموذج Poisson المستقل تقع مباشرة في هذا السياق المعروف.
+
+\section{Gallagher والفترات القصيرة}
+Gallagher (1976) بيّن أن حدوس Hardy--Littlewood الموحدة للـ$k$-tuples تقود إلى توزيع Poisson لعدد الأوليات في فترات طولها من رتبة $\log x$.
+
+أما Montgomery وSoundararajan (2004) فقدما أدلة على أنه في فترات أطول يكون توزيع
+\[
+\psi(x+H)-\psi(x)
+\]
+تقريبًا طبيعيًا بتباين رئيسي من الرتبة
+\[
+H\log\left(\frac{N}{H}\right),
+\]
+وهو أصغر من تنبؤ الاستقلال الساذج في المجال المناسب. هذا قريب مباشرة من ظاهرة under-dispersion التي رأيناها.
+
+\section{الارتباط السلبي}
+عندما وجدنا أن بواقي فترتين متجاورتين تميل إلى ارتباط سلبي، ثم استخدمنا
+\[
+V(H)\approx H\log(X/H)
+\]
+مع الهوية
+\[
+\mathrm{Var}(A+B)=\mathrm{Var}(A)+\mathrm{Var}(B)+2\mathrm{Cov}(A,B),
+\]
+فنحن نستخرج وجهًا من بنية الفترات القصيرة المعروفة، لا نظرية جديدة. عمل Goldston--Montgomery يربط متوسط مربع خطأ عد الأوليات في الفترات القصيرة بارتباط أصفار دالة زيتا.
+
+الجزء الخاص بنا هو استعمال lag-1 وruns وتباين كتل متجاورة كأدوات تشخيص على بيانات الفترات بين مربعات الأوليات.
+
+\section{من Cram\'er إلى Granville}
+Granville عدل نموذج Cram\'er بفرض قيود الأوليات الصغيرة أولًا ثم الاختيار من الأعداد الباقية. هذا قريب جدًا من انتقالنا من النموذج المستقل إلى Wheel-constrained model.
+
+لذلك فكرة ``احذف ما تمنعه العجلات ثم اختر بين الناجين'' لها سلف واضح في الأدبيات، وليست ابتكارًا جديدًا للمشروع.
+
+\section{ناجو الغربال: Gorodetsky 2024}
+بحث Gorodetsky عن تباين الأعداد التي لا تملك عوامل أولية صغيرة في الفترات القصيرة هو نظير مباشر تقريبًا لما نسميه ``ناجي العجلات''. ومن نتائجه النوعية أن تباين هذه الأعداد يمكن أن يكون أصغر من التنبؤ الاحتمالي الساذج.
+
+وهذا يؤيد ملاحظتنا أن فرض الاستقلال بين ناجي الغربال نفسه أضعف من الواقع.
+
+\section{Hardy--Littlewood وsingular series}
+عندما انتقلنا من موضع منفرد إلى زوج
+\[
+n,\qquad n+h,
+\]
+دخلنا مباشرة في إطار Hardy--Littlewood. لأي مجموعة إزاحات $\mathcal H$:
+\[
+\mathfrak S(\mathcal H)
+=
+\prod_p
+\left(1-\frac{\nu_{\mathcal H}(p)}p\right)
+\left(1-\frac1p\right)^{-|\mathcal H|}.
+\]
+صيغة الزوج التي استعملناها هي حالة $k=2$. وتجربة الثلاثيات التالية ستكون حالة $k=3$. إذن الإطار النظري كلاسيكي، حتى لو كان اختبارنا العددي الخاص جديد التصميم.
+
+Gallagher درس متوسط singular series، وأعمال أحدث مثل Kuperberg تدرس مجاميع singular series وتأثيرها في ذيل توزيع عدد الأوليات في الفترات.
+
+\section{Banks--Ford--Tao 2023: أقرب سلف مباشر لنموذجنا النقطي}
+Banks--Ford--Tao قدموا نموذجًا احتماليًا تتكون فيه المجموعة من الأعداد التي تنجو عندما نختار فئة ممنوعة عشوائيًا لكل modulus أولي. وهم يكتبون النموذج صراحة على صورة مجموعة منخولة عشوائيًا، ويربطونه بحدوس Hardy--Littlewood.
+
+هذا قريب جدًا من تجربتنا:
+\begin{enumerate}
+\item تثبيت عجلة حتى $q_0$؛
+\item اختيار فئة ممنوعة عشوائيًا لكل أولي في الذيل؛
+\item دراسة بقاء الأزواج والأنماط.
+\end{enumerate}
+لذلك random-residue point model الذي بنيناه ليس فكرة جديدة في جوهره.
+
+إضافتنا التجريبية الخاصة هي الـthinning داخل كل فترة للحفاظ على المتوسط $\mu_i$ ثم قياس
+\[
+R,\quad \rho_1,\quad \text{runs}.
+\]
+هذا إجراء تحكم وتشخيص خاص بالمشروع، وليس نموذجًا قياسيًا للأوليات في الأدبيات التي راجعتها.
+
+\section{مسح عجلة الأساس $q_0$}
+ثبتنا
+\[
+Q=7919
+\]
+ثم غيرنا cutoff عجلة الأساس من أوليات صغيرة إلى 997، وقسنا مقدار ما ``نجمده'' في العجلة مقابل ما نتركه للـpair model.
+
+في البحث الحالي لم أعثر على عمل منشور يجمع بالضبط:
+\begin{itemize}
+\item الفترات $(p_n^2,p_{n+1}^2)$؛
+\item fixed random-sieve tail حتى $Q$؛
+\item sweep في $q_0$؛
+\item ومقياس توازن يجمع التشتت وlag-1 وruns.
+\end{itemize}
+لذلك هذا تصميم تجريبي خاص بالمشروع فيما عثرت عليه، لكن هذا لا يكفي لادعاء جدة رياضية؛ يمكن أن توجد أعمال قريبة لم تظهر في هذه المراجعة، كما أن المقاييس أدوات إحصائية عامة.
+
+\section{Maier: لماذا لا تكفي مطابقة بعض الإحصاءات}
+أعمال Maier عن الأوليات في الفترات القصيرة أظهرت أن السلوك المحلي قد يخالف الاستدلالات الناعمة المبنية على الكثافة المتوسطة. هذا تحذير منهجي يطابق ما رأيناه مرارًا: قد نجعل $R$ قريبًا من 1 بينما يبقى lag أو runs خاطئًا.
+
+\section{أين نقف؟}
+النتيجة العامة للمراجعة هي:
+\begin{quote}
+لم نكتشف حتى الآن نظرية جديدة في توزيع الأوليات. لكننا لم نعد نجري تجارب عشوائية بلا سياق؛ لقد أعدنا بناء تجريبيًا، ومن طريق أسئلة مستقل، سلسلة من الأفكار المركزية في نظرية الأعداد الاحتمالية والتحليلية: غربال إراتوستينس، نموذج Cram\'er، تصحيحات Granville، الفترات القصيرة، singular series، Hardy--Littlewood $k$-tuples، والنماذج المنخولة العشوائية الحديثة.
+\end{quote}
+
+أقرب جزء إلى مساهمة خاصة بالمشروع الآن هو البروتوكول التجريبي: قياس ``كم بنية'' نحتاج عبر cutoff الغربال ورتبة العلاقات $k$ حتى نعيد إنتاج عدة إحصاءات معًا، لا أي مكوّن نظري منفرد.
+
+\section{الأسئلة التي تستحق المتابعة}
+بدل إعادة إثبات نتائج معروفة، المجال الأفضل هو:
+\begin{enumerate}
+\item قياس أقل رتبة $k$ من العلاقات المحلية اللازمة لمطابقة مجموعة إحصاءات معًا؛
+\item دراسة كيف يتغير أفضل $q_0$ مع موقع العينة $X$ وطول الفترة $H$ وحد الذيل $Q$؛
+\item اختبار هل ``هضبة التوازن'' التي رأيناها ثابتة أم تتحرك بقانون scaling؛
+\item استبدال Bernoulli null للناجين بنماذج أقرب إلى نتائج Gorodetsky؛
+\item مقارنة نموذج triples ثم $k$-tuples مع runs والارتباطات الأطول، لا مع مقياس واحد فقط.
+\end{enumerate}
+
+\section{مراجع مختارة}
+\begin{thebibliography}{99}
+\bibitem{HL1923} G. H. Hardy and J. E. Littlewood, \emph{Some problems of Partitio Numerorum III}, Acta Mathematica 44 (1923), 1--70.
+\bibitem{Cramer1936} H. Cram\'er, \emph{On the order of magnitude of the difference between consecutive prime numbers}, Acta Arithmetica 2 (1936), 23--46.
+\bibitem{Gallagher1976} P. X. Gallagher, \emph{On the distribution of primes in short intervals}, Mathematika 23 (1976), 4--9. \url{https://doi.org/10.1112/S0025579300016442}
+\bibitem{GoldstonMontgomery1987} D. A. Goldston and H. L. Montgomery, \emph{Pair correlation of zeros and primes in short intervals}, Progress in Mathematics 70 (1987), 183--203.
+\bibitem{Granville1995} A. Granville, \emph{Harald Cram\'er and the distribution of prime numbers}, Scandinavian Actuarial Journal 1995(1), 12--28. \url{https://dms.umontreal.ca/~andrew/PDF/cramer.pdf}
+\bibitem{Bazzanella2000} D. Bazzanella, \emph{Primes between consecutive squares}, Archiv der Mathematik 75 (2000), 29--34. \url{https://doi.org/10.1007/s000130050469}
+\bibitem{MS2004} H. L. Montgomery and K. Soundararajan, \emph{Primes in short intervals}, Communications in Mathematical Physics 252 (2004), 589--617. \url{https://doi.org/10.1007/s00220-004-1222-4}
+\bibitem{Pintz2010} J. Pintz, \emph{On the singular series in the prime k-tuple conjecture}, arXiv:1004.1084.
+\bibitem{BFT2023} W. Banks, K. Ford and T. Tao, \emph{Large prime gaps and probabilistic models}, Inventiones Mathematicae 233 (2023), 1471--1518. \url{https://doi.org/10.1007/s00222-023-01199-0}
+\bibitem{Kuperberg2023} V. Kuperberg, \emph{Sums of singular series with large sets and the tail of the distribution of primes}, Quarterly Journal of Mathematics 74 (2023), 1457--1479. \url{https://doi.org/10.1093/qmath/haad030}
+\bibitem{Gorodetsky2024} O. Gorodetsky, \emph{The variance of integers without small prime factors in short intervals}, Mathematische Zeitschrift 308 (2024), Article 59. \url{https://doi.org/10.1007/s00209-024-03601-w}
+\bibitem{OEIS} OEIS Foundation, \emph{A050216: Number of primes between consecutive prime squares}. \url{https://oeis.org/A050216}
+\end{thebibliography}
+\end{document}
