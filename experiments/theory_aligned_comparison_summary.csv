@@ -1,0 +1,9 @@
+item,scope,type,result
+"Leung 2026 adjacent negative correlation","weighted ψ counts in equal-relative short intervals",prediction,"rho_1 approx -log(2)/log(1/delta), with secondary correction from variance"
+"Our weighted moving-window test delta=0.001","delta=0.001, 8000 log-spaced anchors",observed,"rho1=-0.140986; corrected prediction=-0.126195"
+"Our weighted moving-window test delta=0.002","delta=0.002, 8000 log-spaced anchors",observed,"rho1=-0.169593; corrected prediction=-0.144420"
+"Leung multivariate Gaussian prediction","3-4 neighboring intervals",prediction,"higher local ordering/sign behavior should largely follow covariance matrix if Gaussian approximation is adequate"
+"Prime-square monotone triples","448 consecutive triples","observed vs pair-Gaussian","observed=145; model mean=144.554; p=1.000"
+"Prime-square runs","450 consecutive intervals","observed vs pair-Gaussian","observed=256; model mean=240.994; p=0.148"
+"Point-level wheel+pair model","best fixed-Q configuration","project model","still underproduces negative correlation/runs relative to count-level covariance model"
+"Decision on k=3","current evidence","research decision","Do not promote triples yet; first make point-level model reproduce the full pair covariance kernel and test scaling at larger X"
