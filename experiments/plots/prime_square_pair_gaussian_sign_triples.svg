@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.line{fill:none;stroke:currentColor;stroke-width:2}.dash{stroke-dasharray:7 5}.dot{fill:currentColor}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Prime-square triple sign patterns: observed vs pair-Gaussian</text>
+<line class="axis" x1="85" y1="55" x2="85" y2="465"/><line class="axis" x1="85" y1="465" x2="890" y2="465"/>
+<line class="grid" x1="85" y1="465.0" x2="890" y2="465.0"/><text x="77" y="469.0" text-anchor="end">33</text>
+<line class="grid" x1="85" y1="383.0" x2="890" y2="383.0"/><text x="77" y="387.0" text-anchor="end">42</text>
+<line class="grid" x1="85" y1="301.0" x2="890" y2="301.0"/><text x="77" y="305.0" text-anchor="end">50</text>
+<line class="grid" x1="85" y1="219.0" x2="890" y2="219.0"/><text x="77" y="223.0" text-anchor="end">59</text>
+<line class="grid" x1="85" y1="137.0" x2="890" y2="137.0"/><text x="77" y="141.0" text-anchor="end">67</text>
+<line class="grid" x1="85" y1="55.0" x2="890" y2="55.0"/><text x="77" y="59.0" text-anchor="end">76</text>
+<text x="85.0" y="487" text-anchor="middle">000</text><text x="200.0" y="487" text-anchor="middle">001</text><text x="315.0" y="487" text-anchor="middle">010</text><text x="430.0" y="487" text-anchor="middle">011</text><text x="545.0" y="487" text-anchor="middle">100</text><text x="660.0" y="487" text-anchor="middle">101</text><text x="775.0" y="487" text-anchor="middle">110</text><text x="890.0" y="487" text-anchor="middle">111</text>
+<polyline class="line" points="85.0,417.3 200.0,198.0 315.0,102.7 430.0,245.7 545.0,207.6 660.0,140.8 775.0,245.7 890.0,407.8"/>
+<polyline class="line dash" points="85.0,334.9 200.0,230.8 315.0,187.4 430.0,230.3 545.0,230.9 660.0,186.9 775.0,230.3 890.0,334.1"/>
+<text x="99" y="73">solid: observed</text><text x="99" y="91">dashed: pair-Gaussian</text>
+<text x="460.0" y="522" text-anchor="middle">Sign pattern (0=below, 1=above)</text><text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">Count among 448 triples</text>
+</svg>
