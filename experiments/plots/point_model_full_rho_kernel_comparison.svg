@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.solid{fill:none;stroke:currentColor;stroke-width:2}.dash{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:7 5}.dot{fill:currentColor}.open{fill:none;stroke:currentColor;stroke-width:2}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Full rho(k) kernel: observed, theory, and point model</text>
+<line class="axis" x1="85" y1="55" x2="85" y2="465"/>
+<line class="axis" x1="85" y1="225.8" x2="890" y2="225.8"/>
+<line class="grid" x1="85" y1="430.8" x2="890" y2="430.8"/><text x="77" y="434.8" text-anchor="end">-0.12</text>
+<line class="grid" x1="85" y1="362.5" x2="890" y2="362.5"/><text x="77" y="366.5" text-anchor="end">-0.08</text>
+<line class="grid" x1="85" y1="294.2" x2="890" y2="294.2"/><text x="77" y="298.2" text-anchor="end">-0.04</text>
+<line class="grid" x1="85" y1="225.8" x2="890" y2="225.8"/><text x="77" y="229.8" text-anchor="end">0.00</text>
+<line class="grid" x1="85" y1="157.5" x2="890" y2="157.5"/><text x="77" y="161.5" text-anchor="end">0.04</text>
+<line class="grid" x1="85" y1="89.2" x2="890" y2="89.2"/><text x="77" y="93.2" text-anchor="end">0.08</text>
+<line class="grid" x1="85.0" y1="55" x2="85.0" y2="465"/><text x="85.0" y="487" text-anchor="middle">1</text>
+<line class="grid" x1="127.4" y1="55" x2="127.4" y2="465"/><text x="127.4" y="487" text-anchor="middle">2</text>
+<line class="grid" x1="254.5" y1="55" x2="254.5" y2="465"/><text x="254.5" y="487" text-anchor="middle">5</text>
+<line class="grid" x1="466.3" y1="55" x2="466.3" y2="465"/><text x="466.3" y="487" text-anchor="middle">10</text>
+<line class="grid" x1="678.2" y1="55" x2="678.2" y2="465"/><text x="678.2" y="487" text-anchor="middle">15</text>
+<line class="grid" x1="890.0" y1="55" x2="890.0" y2="465"/><text x="890.0" y="487" text-anchor="middle">20</text>
+<polyline class="solid" points="85.0,437.1 127.4,365.5 169.7,300.4 212.1,164.5 254.5,233.1 296.8,201.0 339.2,176.3 381.6,217.0 423.9,245.8 466.3,247.7 508.7,153.5 551.1,282.7 593.4,300.0 635.8,235.8 678.2,230.5 720.5,267.6 762.9,312.6 805.3,74.1 847.6,223.1 890.0,431.7"/>
+<text x="100" y="73">observed</text>
+<polyline class="dash" points="85.0,411.6 127.4,301.7 169.7,272.9 212.1,261.1 254.5,253.3 296.8,248.4 339.2,245.1 381.6,242.9 423.9,240.8 466.3,239.3 508.7,237.8 551.1,237.0 593.4,236.1 635.8,235.4 678.2,234.6 720.5,234.2 762.9,233.7 805.3,233.2 847.6,232.8 890.0,232.5"/>
+<text x="100" y="91">theory</text>
+<polyline class="dash" points="85.0,408.3 127.4,287.3 169.7,274.7 212.1,257.4 254.5,237.3 296.8,256.2 339.2,240.2 381.6,223.2 423.9,242.5 466.3,231.3 508.7,232.5 551.1,238.4 593.4,222.5 635.8,233.0 678.2,237.5 720.5,221.6 762.9,231.5 805.3,243.1 847.6,226.3 890.0,236.4"/>
+<text x="100" y="109">raw sieve</text>
+<polyline class="solid" points="85.0,409.1 127.4,290.0 169.7,274.1 212.1,259.3 254.5,238.8 296.8,255.1 339.2,240.6 381.6,227.2 423.9,242.0 466.3,233.1 508.7,235.1 551.1,237.6 593.4,226.0 635.8,233.1 678.2,238.0 720.5,224.4 762.9,231.3 805.3,242.7 847.6,227.0 890.0,235.8"/>
+<text x="100" y="127">pair-kernel point</text>
+<text x="460.0" y="522" text-anchor="middle">lag k</text>
+<text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">rho(k)</text>
+</svg>
