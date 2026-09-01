@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.line{fill:none;stroke:currentColor;stroke-width:2}.dash{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:7 5}.dot{fill:currentColor}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Point-model tradeoff: variance versus pair-kernel error</text>
+<line class="axis" x1="90" y1="55" x2="90" y2="465"/><line class="axis" x1="90" y1="465" x2="890" y2="465"/>
+<circle class="dot" cx="150.5" cy="80.9" r="4"/><text x="156.5" y="74.9">raw_random_sieve_quota</text>
+<circle class="dot" cx="828.7" cy="218.3" r="4"/><text x="834.7" y="212.3">physical_local_multiscale</text>
+<circle class="dot" cx="836.1" cy="183.2" r="4"/><text x="842.1" y="177.2">normalized_u_local_multiscale</text>
+<circle class="dot" cx="809.7" cy="437.1" r="4"/><text x="815.7" y="431.1">interval_pair_kernel_bridge</text>
+<line class="dash" x1="804.1" y1="55" x2="804.1" y2="465"/>
+<text x="460.0" y="522" text-anchor="middle">dispersion R</text><text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">kernel RMSE</text>
+</svg>
