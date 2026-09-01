@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.line{fill:none;stroke:currentColor;stroke-width:2}.dash{fill:none;stroke:currentColor;stroke-width:1.6;stroke-dasharray:7 5}.dot{fill:currentColor}.open{fill:none;stroke:currentColor;stroke-width:2}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Reference fine spectrum in normalized u</text>
+<line class="axis" x1="90" y1="55" x2="90" y2="465"/><line class="axis" x1="90" y1="465" x2="890" y2="465"/>
+<line class="grid" x1="90" y1="465.0" x2="890" y2="465.0"/><text x="82" y="469.0" text-anchor="end">0.0</text>
+<line class="grid" x1="90" y1="412.1" x2="890" y2="412.1"/><text x="82" y="416.1" text-anchor="end">0.1</text>
+<line class="grid" x1="90" y1="359.2" x2="890" y2="359.2"/><text x="82" y="363.2" text-anchor="end">0.2</text>
+<line class="grid" x1="90" y1="306.2" x2="890" y2="306.2"/><text x="82" y="310.2" text-anchor="end">0.3</text>
+<line class="grid" x1="90" y1="253.3" x2="890" y2="253.3"/><text x="82" y="257.3" text-anchor="end">0.4</text>
+<line class="grid" x1="90" y1="200.4" x2="890" y2="200.4"/><text x="82" y="204.4" text-anchor="end">0.5</text>
+<line class="grid" x1="90" y1="147.5" x2="890" y2="147.5"/><text x="82" y="151.5" text-anchor="end">0.6</text>
+<line class="grid" x1="90" y1="94.5" x2="890" y2="94.5"/><text x="82" y="98.5" text-anchor="end">0.7</text>
+<polyline class="line" points="90.0,85.4 223.3,457.2 231.4,439.8 265.1,425.4 298.3,460.5 314.9,452.8 356.7,464.9 381.6,452.4 406.7,447.3 414.9,464.6 456.6,463.0 473.3,462.6 515.0,461.9 531.7,456.1 565.0,463.0 573.3,464.9 623.3,463.9 631.7,464.1 656.6,464.7 673.3,459.3 890.0,461.9"/>
+<circle class="dot" cx="90.0" cy="85.4" r="2.8"/><circle class="dot" cx="223.3" cy="457.2" r="2.8"/><circle class="dot" cx="231.4" cy="439.8" r="2.8"/><circle class="dot" cx="265.1" cy="425.4" r="2.8"/><circle class="dot" cx="298.3" cy="460.5" r="2.8"/><circle class="dot" cx="314.9" cy="452.8" r="2.8"/><circle class="dot" cx="356.7" cy="464.9" r="2.8"/><circle class="dot" cx="381.6" cy="452.4" r="2.8"/><circle class="dot" cx="406.7" cy="447.3" r="2.8"/><circle class="dot" cx="414.9" cy="464.6" r="2.8"/><circle class="dot" cx="456.6" cy="463.0" r="2.8"/><circle class="dot" cx="473.3" cy="462.6" r="2.8"/><circle class="dot" cx="515.0" cy="461.9" r="2.8"/><circle class="dot" cx="531.7" cy="456.1" r="2.8"/><circle class="dot" cx="565.0" cy="463.0" r="2.8"/><circle class="dot" cx="573.3" cy="464.9" r="2.8"/><circle class="dot" cx="623.3" cy="463.9" r="2.8"/><circle class="dot" cx="631.7" cy="464.1" r="2.8"/><circle class="dot" cx="656.6" cy="464.7" r="2.8"/><circle class="dot" cx="673.3" cy="459.3" r="2.8"/><circle class="dot" cx="890.0" cy="461.9" r="2.8"/>
+<text x="90.0" y="487" text-anchor="middle">2</text><text x="223.3" y="487" text-anchor="middle">4</text><text x="356.7" y="487" text-anchor="middle">8</text><text x="490.0" y="487" text-anchor="middle">16</text><text x="623.3" y="487" text-anchor="middle">32</text><text x="756.7" y="487" text-anchor="middle">64</text><text x="890.0" y="487" text-anchor="middle">128</text>
+<text x="460.0" y="522" text-anchor="middle">Haar support in normalized intervals</text><text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">variance fraction</text>
+</svg>
