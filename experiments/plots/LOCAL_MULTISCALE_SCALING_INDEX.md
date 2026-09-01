@@ -27,3 +27,9 @@
 - [`local_multiscale_scaling_transfer_error.svg`](local_multiscale_scaling_transfer_error.svg)
 
 يعرض خطأ الـkernel عندما ننقل طيفًا واحدًا بتغيير مقاييس الدعم بنسبة تغير `H` بدل إعادة ملاءمة الطيف من الصفر.
+
+## المرحلة التالية: الإحداثي المحلي المطبع u
+
+فشل النقل الدقيق باستخدام `H_median` قاد إلى تجربة تجعل كل prime-square interval وحدة طول واحدة. فهرس الرسوم والنتائج الجديدة:
+
+- [`NORMALIZED_U_SPECTRUM_INDEX.md`](NORMALIZED_U_SPECTRUM_INDEX.md)
