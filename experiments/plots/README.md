@@ -148,6 +148,38 @@
 
 يقارن الأنماط الثمانية `000` إلى `111` في 448 ثلاثية متجاورة مع نموذج pair-Gaussian. لم يظهر أي نمط ثلاثي شاذ إحصائيًا، وهو سبب مباشر لتأجيل الانتقال إلى نموذج `k=3` صريح.
 
+## النموذج النقطي لمنحنى الارتباط الكامل rho(k)
+
+التقرير الرياضي:
+
+- [`../POINT_MODEL_FULL_RHO_KERNEL_STUDY.tex`](../POINT_MODEL_FULL_RHO_KERNEL_STUDY.tex)
+
+هذه التجربة تشخّص أولًا أن Bernoulli thinning المستقل يضيف تباينًا بلا تغاير فيضعف الارتباط، ثم تستبدله بتجربة block-quota، وأخيرًا تضيف حقلًا زوجيًا واحدًا ذا covariance محددة من نظرية الفترات القصيرة. لم تُستخدم أي معلومة ثلاثية في الملاءمة.
+
+### 1. منحنى الارتباط الكامل حتى lag 20
+
+![Full rho kernel](point_model_full_rho_kernel_comparison.svg)
+
+- [`point_model_full_rho_kernel_comparison.svg`](point_model_full_rho_kernel_comparison.svg)
+
+يبين أن random sieve الخام يحمل بالفعل kernel زوجيًا قريبًا من النظرية، وأن Pair-kernel point model يحافظ على هذا الشكل مع تصحيح التباين الهامشي.
+
+### 2. مقارنة شكل kernel مباشرة بدالة Delta(k)
+
+![Delta kernel shape](point_model_delta_shape_comparison.svg)
+
+- [`point_model_delta_shape_comparison.svg`](point_model_delta_shape_comparison.svg)
+
+يعرض `rho(k)/rho(1)` مقابل `Delta(k)/Delta(1)`. خطأ الشكل المطبع للنموذج النهائي يقارب `0.037`.
+
+### 3. المقايضة بين التشتت والارتباط
+
+![Variance-correlation tradeoff](point_model_variance_correlation_tradeoff.svg)
+
+- [`point_model_variance_correlation_tradeoff.svg`](point_model_variance_correlation_tradeoff.svg)
+
+يوضح لماذا لا يمكن لضوضاء thinning مستقلة أن تطابق التشتت والارتباط معًا: رفع التباين بهذه الطريقة يخفض مقدار الارتباط. الحقل الزوجي المصحح ينتقل إلى قرب التشتت المرصود من دون التضحية بالـkernel.
+
 ## قاعدة التوثيق
 
 عندما تنتج تجربة رسمًا يستخدم في الاستنتاج أو المقارنة، يجب حفظ نسخة قابلة للعرض داخل المستودع وربطها بالتقرير أو بهذا الفهرس، حتى لا تبقى الرسوم محصورة في ملفات الجلسة المحلية.
