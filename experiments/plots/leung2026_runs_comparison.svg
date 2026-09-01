@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="540" viewBox="0 0 920 540">
+<style>text{font-family:system-ui,sans-serif;font-size:13px}.title{font-size:18px;font-weight:600}.axis{stroke:currentColor}.grid{stroke:currentColor;stroke-opacity:.15}.line{fill:none;stroke:currentColor;stroke-width:2}.dash{stroke-dasharray:7 5}.dot{fill:currentColor}</style>
+<text class="title" x="460.0" y="28" text-anchor="middle">Local sign-runs: pair covariance explains most behavior</text>
+<line class="axis" x1="85" y1="55" x2="85" y2="465"/><line class="axis" x1="85" y1="465" x2="890" y2="465"/>
+<line class="grid" x1="85" y1="465.0" x2="890" y2="465.0"/><text x="77" y="469.0" text-anchor="end">2.611</text>
+<line class="grid" x1="85" y1="383.0" x2="890" y2="383.0"/><text x="77" y="387.0" text-anchor="end">2.633</text>
+<line class="grid" x1="85" y1="301.0" x2="890" y2="301.0"/><text x="77" y="305.0" text-anchor="end">2.655</text>
+<line class="grid" x1="85" y1="219.0" x2="890" y2="219.0"/><text x="77" y="223.0" text-anchor="end">2.677</text>
+<line class="grid" x1="85" y1="137.0" x2="890" y2="137.0"/><text x="77" y="141.0" text-anchor="end">2.699</text>
+<line class="grid" x1="85" y1="55.0" x2="890" y2="55.0"/><text x="77" y="59.0" text-anchor="end">2.721</text>
+<line class="grid" x1="85.0" y1="55" x2="85.0" y2="465"/><text x="85.0" y="487" text-anchor="middle">0.001</text>
+<line class="grid" x1="353.3" y1="55" x2="353.3" y2="465"/><text x="353.3" y="487" text-anchor="middle">0.002</text>
+<line class="grid" x1="621.7" y1="55" x2="621.7" y2="465"/><text x="621.7" y="487" text-anchor="middle">0.004</text>
+<line class="grid" x1="890.0" y1="55" x2="890.0" y2="465"/><text x="890.0" y="487" text-anchor="middle">0.008</text>
+<polyline class="line" points="85.0,390.6 353.3,252.5 621.7,89.2 890.0,121.8"/>
+<polyline class="line dash" points="85.0,430.8 353.3,352.2 621.7,273.4 890.0,157.4"/>
+<text x="99" y="73">empirical</text><text x="99" y="90">Leung Gaussian</text>
+<text x="460.0" y="522" text-anchor="middle">delta</text><text transform="translate(20 270.0) rotate(-90)" text-anchor="middle">Mean runs in 4 intervals</text>
+</svg>
