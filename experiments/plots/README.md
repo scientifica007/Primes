@@ -180,6 +180,38 @@
 
 يوضح لماذا لا يمكن لضوضاء thinning مستقلة أن تطابق التشتت والارتباط معًا: رفع التباين بهذه الطريقة يخفض مقدار الارتباط. الحقل الزوجي المصحح ينتقل إلى قرب التشتت المرصود من دون التضحية بالـkernel.
 
+## الآلية النقطية المحلية متعددة المقاييس
+
+التقرير الرياضي:
+
+- [`../LOCAL_MULTISCALE_PAIR_MECHANISM_STUDY.tex`](../LOCAL_MULTISCALE_PAIR_MECHANISM_STUDY.tex)
+
+هذه المرحلة تنقل تصحيح `pair covariance` من حقل Gaussian على مستوى الفترات إلى عمليات إعادة توزيع محلية محدودة الدعم على خط الأعداد، باستخدام موجات Haar متعددة المقاييس. أوزان المقاييس اختيرت من الـkernel النظري، بينما استُخدم من بيانات التدريب معامل شدة واحد فقط لضبط مقدار التشتت.
+
+### 1. أوزان المقاييس المحلية
+
+![Local multiscale weights](local_multiscale_scale_weights.svg)
+
+- [`local_multiscale_scale_weights.svg`](local_multiscale_scale_weights.svg)
+
+يوضح المقاييس المحلية التي اختارها NNLS لتمثيل الـkernel النظري. ظهر أكبر وزن عند دعم يساوي `65536` عددًا صحيحًا في هذه العينة، لكن لا ينبغي تفسير هذا الرقم كحد عالمي أو ثابت قبل اختبار قانون scaling عبر قيم مختلفة لـ`X` و`H`.
+
+### 2. منحنى rho(k) الكامل
+
+![Local multiscale full rho](local_multiscale_full_rho_comparison.svg)
+
+- [`local_multiscale_full_rho_comparison.svg`](local_multiscale_full_rho_comparison.svg)
+
+يقارن البيانات والنظرية والنموذج النقطي المحلي عبر `lag=1..20`. النموذج المحلي يطابق التشتت وقوة `rho(1)` جيدًا، والمنحنى المرصود كاملًا لا يبدو شاذًا تحت المحاكاة.
+
+### 3. مقارنة الشكل بدالة Delta(k)
+
+![Local multiscale Delta shape](local_multiscale_delta_shape_comparison.svg)
+
+- [`local_multiscale_delta_shape_comparison.svg`](local_multiscale_delta_shape_comparison.svg)
+
+يبين أن الآلية المحلية تولد amplitude قريبًا جدًا من النظرية وشكلًا قريبًا من `Delta(k)` من دون إدخال مصفوفة covariance Gaussian جاهزة على مستوى الفترات. بقي خطأ الشكل أكبر من bridge model، ولذلك الخطوة التالية هي البحث عن قانون scaling لأوزان المقاييس بدل إعادة ملاءمتها عدديًا في كل نطاق.
+
 ## قاعدة التوثيق
 
 عندما تنتج تجربة رسمًا يستخدم في الاستنتاج أو المقارنة، يجب حفظ نسخة قابلة للعرض داخل المستودع وربطها بالتقرير أو بهذا الفهرس، حتى لا تبقى الرسوم محصورة في ملفات الجلسة المحلية.
