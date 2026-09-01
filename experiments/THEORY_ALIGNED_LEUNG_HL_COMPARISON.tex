@@ -1,0 +1,381 @@
+\documentclass[12pt]{article}
+\usepackage{amsmath,amssymb,booktabs,longtable,array}
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setmainlanguage{arabic}
+\setotherlanguage{english}
+\newfontfamily\arabicfont[Script=Arabic]{Amiri}
+\usepackage{geometry}
+\geometry{margin=2.1cm}
+\usepackage{hyperref}
+
+\title{مقارنة تجارب المشروع مباشرة بتنبؤات Leung 2026 وHardy--Littlewood}
+\author{مشروع تجربة البحث عن الأعداد الأولية}
+\date{2026-09-01}
+
+\begin{document}
+\maketitle
+
+\section{الهدف}
+
+قبل الانتقال من الأزواج إلى نموذج ثلاثي \(k=3\)، نختبر سؤالًا منهجيًا:
+
+\begin{quote}
+هل السلوك الذي رأيناه بالفعل يحتاج إلى معلومات ثلاثية، أم أن نظرية الارتباط الزوجي والتقريب الغاوسي متعدد المتغيرات تفسره قبل أن نضيف بنية جديدة؟
+\end{quote}
+
+لذلك نفذنا تجربتين:
+
+\begin{enumerate}
+\item تجربة مصطفة مع صياغة Leung 2026 باستعمال العد الموزون
+\(\psi\) في فترات قصيرة ذات طول نسبي ثابت.
+\item إعادة فحص سلسلة الفترات بين مربعات الأوليات باستعمال نموذج Gaussian
+تحدده مصفوفة الارتباط الزوجي فقط، ثم اختبار runs والأنماط الثلاثية.
+\end{enumerate}
+
+\section{تنبؤ Leung 2026}
+
+يدرس Leung العد الموزون
+\[
+\psi(x)=\sum_{p^k\le x}\log p.
+\]
+
+لفترات طولها
+\[
+h=\delta x,
+\]
+يثبت، تحت RH وLI، توزيعًا Gaussian متعدد المتغيرات ذا ارتباطات سالبة ضعيفة.
+
+لفترتين متجاورتين يعطي Corollary 1.1، في الحد الرئيسي:
+\[
+\rho_1
+\approx
+-\frac{\log 2}{\log(1/\delta)}.
+\]
+
+وتعطي Proposition 2.2 صيغة أدق للتغاير:
+\[
+\mathrm{Cov}_{jk}
+=
+-\Delta(|t_j-t_k|)\delta
++
+O\!\left((T\delta\log(1/\delta))^2\right),
+\qquad j\ne k,
+\]
+حيث
+\[
+\Delta(t)
+=
+\frac12\left(
+(t+1)\log(t+1)
+-2t\log t
++(t-1)\log(t-1)
+\right).
+\]
+
+أما التباين فهو، إلى الحد الثانوي:
+\[
+V
+=
+\delta\log\frac1\delta
++
+(1-\gamma-\log2\pi)\delta
++\cdots.
+\]
+
+وبالتالي استعملنا للمقارنة المنتهية:
+\[
+\rho_k^{(\mathrm{sec})}
+=
+-\frac{\Delta(k)}
+{\log(1/\delta)+1-\gamma-\log2\pi}.
+\]
+
+هذه الصيغة الأخيرة ليست حدًا نهائيًا جديدًا؛ هي مجرد استعمال مباشر للحدين
+الرئيسيين في صيغة Leung لتقليل انحياز الحجم المنتهي.
+
+\section{التجربة المصفوفة مع Leung}
+
+اخترنا \(8000\) نقطة \(x\) موزعة بالتساوي في \(\log x\) داخل المجال:
+\[
+20\,000\,000\le x\le55\,000\,000.
+\]
+
+لكل:
+\[
+\delta\in\{0.001,0.002,0.004,0.008\},
+\]
+حسبنا أربع فترات متجاورة طول كل منها \(\delta x\)، واستعملنا العد الموزون
+\(\psi\)، ثم قسمنا الانحراف على التباين المتوقع من صيغة Leung.
+
+\subsection{التباين والشكل الهامشي}
+
+كان متوسط تباين المتغير المعياري عبر الفترات الأربع:
+
+\begin{center}
+\begin{tabular}{rrr}
+\toprule
+\(\delta\) & متوسط التباين المرصود & متوسط kurtosis\\
+\midrule
+0.001 & 1.0724 & 3.0252\\
+0.002 & 1.0544 & 2.8317\\
+0.004 & 1.0208 & 2.8066\\
+0.008 & 0.9824 & 3.1176\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+إذن التطبيع النظري يضع التباين قريبًا من \(1\)، والشكل الهامشي قريبًا
+من Gaussian على هذا المدى، مع انحرافات منتهية متوقعة.
+
+\subsection{الارتباط المتجاور}
+
+\begin{center}
+\begin{tabular}{rrrr}
+\toprule
+\(\delta\) & \(\rho_1\) المرصود &
+تنبؤ الحد الرئيسي & تنبؤ الحد الثانوي\\
+\midrule
+0.001 & -0.1410 & -0.1003 & -0.1262\\
+0.002 & -0.1696 & -0.1115 & -0.1444\\
+0.004 & -0.2018 & -0.1255 & -0.1688\\
+0.008 & -0.1221 & -0.1436 & -0.2031\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+في القيم الأصغر لـ\(\delta\)، خصوصًا \(0.001\) و\(0.002\)، يتحرك الحد
+الثانوي بوضوح نحو البيانات مقارنة بالحد الرئيسي.
+ليست هذه مطابقة استدلالية لأن المجال العددي محدود، لكن الإشارة والحجم
+متفقان نوعيًا بصورة قوية مع نظرية Leung.
+
+\section{الارتباط عبر مسافات أطول}
+
+تنبؤ Leung هو أن:
+\[
+\rho_k
+\propto
+-\Delta(k),
+\]
+وأن \(\Delta(k)\) تتناقص مع المسافة، وبعيدًا:
+\[
+\Delta(k)\sim\frac{1}{2k}.
+\]
+
+في بياناتنا ظهر بوضوح أن الارتباط الأقوى هو عند الجار، ثم يضعف عند
+المسافات \(2\) و\(3\). توجد انحرافات منتهية، خصوصًا عند
+\(\delta=0.004,0.008\)، ولذلك لا نستعمل هذه التجربة لإثبات الصيغة؛
+بل للتحقق من أننا نقيس الظاهرة نفسها التي تصفها الأدبيات.
+
+\section{اختبار ثلاث فترات دون إدخال بنية ثلاثية}
+
+نظرية Leung لا تقول فقط إن كل زوج له ارتباط؛ بل إن المتجه الكامل
+لعدة فترات يصبح تقريبًا Gaussian متعدد المتغيرات.
+
+وهذا مهم لأن Gaussian متعدد المتغيرات لا يحتاج معاملات ثلاثية مستقلة:
+بمجرد معرفة مصفوفة التغاير، تتحدد توزيعات الأنماط الثلاثية أيضًا.
+
+اختبرنا ترتيب أول ثلاث فترات.
+مجموع حالتي الترتيب الرتيب:
+\[
+Z_1<Z_2<Z_3
+\quad\text{أو}\quad
+Z_1>Z_2>Z_3
+\]
+كان كما يلي:
+
+\begin{center}
+\begin{tabular}{rrr}
+\toprule
+\(\delta\) & المرصود & Gaussian من مصفوفة Leung\\
+\midrule
+0.001 & 0.3218 & 0.3200\\
+0.002 & 0.3119 & 0.3185\\
+0.004 & 0.3094 & 0.3162\\
+0.008 & 0.3059 & 0.3134\\
+\bottomrule
+\end{tabular}
+\end{center}
+
+كانت أكبر فجوة في احتمال ترتيب منفرد أقل من نحو \(0.012\).
+
+إذن على هذا الاختبار، لا نحتاج إلى معامل ثلاثي مستقل لكي نفسر سلوك
+ثلاث فترات؛ مصفوفة الأزواج مع Gaussian approximation تفسر معظم الإشارة.
+
+\section{إعادة فحص بيانات مربعات الأوليات}
+
+عدنا إلى \(450\) فترة:
+\[
+p_n^2<x<p_{n+1}^2,
+\qquad p_n\ge4001.
+\]
+
+في تجربة سابقة بنينا مصفوفة تغاير من قانون الفترات القصيرة، وأدخلنا
+الارتباطات حتى lag \(50\)، من غير ضبطها على الأنماط الثلاثية المرصودة.
+
+ثم أجرينا \(50\,000\) محاكاة Gaussian.
+
+\subsection{runs}
+
+المرصود:
+\[
+256.
+\]
+
+النموذج الزوجي Gaussian:
+\[
+240.99\pm10.32.
+\]
+
+وقيمة Monte Carlo ثنائية الطرف:
+\[
+p\approx0.148.
+\]
+
+إذن قيمة runs مرتفعة نسبيًا، لكنها ليست شاذة بما يكفي لتكون دليلًا
+مقنعًا على ضرورة \(k=3\).
+
+\subsection{الثلاثيات الرتيبة}
+
+من أصل \(448\) ثلاثية متجاورة، كان العدد المرصود للثلاثيات الصاعدة أو
+الهابطة رتيبًا:
+\[
+145.
+\]
+
+أما نموذج الأزواج Gaussian فأعطى:
+\[
+144.55\pm8.86.
+\]
+
+والقيمة المرصودة تقع عمليًا في مركز التوزيع المحاكى.
+
+\subsection{أنماط الإشارات الثلاثية}
+
+اختبرنا الأنماط الثمانية:
+\[
+000,001,010,011,100,101,110,111.
+\]
+
+لم يكن أي نمط شاذًا؛ جميع قيم Monte Carlo ثنائية الطرف كانت أكبر من
+نحو:
+\[
+0.22.
+\]
+
+إذن نموذجًا يعتمد على covariance زوجية فقط يفسر هذه الإحصاءات الثلاثية
+في العينة الحالية بصورة جيدة.
+
+\section{لماذا كان نموذجنا النقطي يوحي بأن triples مطلوبة؟}
+
+هناك فرق بين نموذجين في المشروع:
+
+\begin{enumerate}
+\item نموذج count-level Gaussian الذي يأخذ covariance الصحيحة للفترات
+القصيرة تقريبًا.
+\item نموذج point-level: عجلة ثابتة + random residue tail + thinning.
+\end{enumerate}
+
+النموذج الأول أعطى:
+\[
+\rho_1\approx-0.109
+\]
+و
+\[
+\mathrm{runs}\approx241,
+\]
+وكلاهما منسجم إحصائيًا مع البيانات.
+
+أما أفضل نموذج نقطي في المسح الأخير فبقي تقريبًا عند:
+\[
+\rho_1\approx-0.083,
+\qquad
+\mathrm{runs}\approx237.
+\]
+
+إذن المشكلة الحالية ليست دليلًا على أن ``الأزواج غير كافية في الطبيعة''؛
+بل دليل أقوى على أن \textbf{نموذجنا النقطي لم ينجح بعد في إعادة إنتاج
+covariance الزوجية الكاملة التي تعرفها نظرية الفترات القصيرة}.
+
+وهذا يغير ترتيب الخطوات التالية.
+
+\section{موقع Leung 2025}
+
+عمل Leung 2025 عن pseudorandomness يثبت، تحت صيغة موحدة من
+Hardy--Littlewood \(k\)-tuple conjecture، تقاربًا إلى Poisson point process
+عند مقياس التطبيع بواسطة \(\log N\).
+
+فتراتنا بين مربعات الأوليات أطول بكثير من \(\log N\)، ولذلك التجربة الحالية
+أقرب إلى النظام Gaussian للفترات القصيرة من كونها في نظام Poisson المحلي.
+هذا يفسر لماذا Leung 2026 وMontgomery--Soundararajan أكثر مباشرة
+لمقاييسنا الحالية.
+
+\section{القرار البحثي بعد المقارنة}
+
+القرار السابق كان:
+\[
+\text{Pair}\longrightarrow\text{Triple}.
+\]
+
+بعد المقارنة المباشرة بالأدبيات والاختبار الجديد، القرار الأدق هو:
+\[
+\boxed{
+\text{لا ننتقل إلى triples بعد.}
+}
+\]
+
+السبب:
+
+\begin{enumerate}
+\item الارتباط السلبي المرصود متوافق نوعيًا وكمّيًا مع نظرية Leung للفترات القصيرة.
+\item السلوك الثلاثي المحلي يتفق جيدًا مع Gaussian متعدد المتغيرات المحدد
+بـpair covariance فقط.
+\item حتى runs في بيانات مربعات الأوليات ليس شاذًا تحت نموذج pair-Gaussian.
+\item العجز الواضح موجود حاليًا في النموذج النقطي الخاص بالمشروع، الذي لا
+يعيد إنتاج قوة covariance الزوجية كاملة.
+\end{enumerate}
+
+إذن التجربة التالية الأكثر انضباطًا هي:
+
+\begin{quote}
+تعديل النموذج النقطي بحيث يستهدف \emph{مصفوفة covariance الزوجية الكاملة}
+عبر عدة lags، لا lag-1 فقط، ثم نعيد اختبار runs والثلاثيات.
+\end{quote}
+
+إذا نجح في كل مقاييس الزوج وبقيت إحصاءات ثلاثية شاذة، عندها يصبح الانتقال
+إلى Hardy--Littlewood \(k=3\) مبررًا تجريبيًا.
+
+\section{المراجع الأساسية}
+
+\begin{itemize}
+\item Sun-Kai Leung,
+\emph{Joint distribution of primes in multiple short intervals},
+Advances in Mathematics 490 (2026), 110847.
+\url{https://www.sciencedirect.com/science/article/pii/S0001870826000691}
+
+\item Sun-Kai Leung,
+\emph{Pseudorandomness of primes at large scales},
+Quarterly Journal of Mathematics 76 (2025), 251--263.
+\url{https://academic.oup.com/qjmath/article/76/1/251/7951830}
+
+\item H. L. Montgomery and K. Soundararajan,
+\emph{Primes in short intervals},
+Communications in Mathematical Physics 252 (2004), 589--617.
+\url{https://arxiv.org/abs/math/0409258}
+\end{itemize}
+
+\section{ملفات التجربة}
+
+\begin{itemize}
+\item \texttt{theory\_aligned\_comparison\_summary.csv}
+\item \texttt{leung2026\_weighted\_interval\_summary.csv}
+\item \texttt{leung2026\_lag\_correlation\_comparison.csv}
+\item \texttt{leung2026\_triple\_ordering\_comparison.csv}
+\item \texttt{prime\_square\_pair\_gaussian\_higher\_order\_diagnostics.csv}
+\item \texttt{prime\_square\_pair\_gaussian\_sign\_triples.csv}
+\item \texttt{plots/leung2026\_correlation\_comparison.svg}
+\item \texttt{plots/leung2026\_runs\_comparison.svg}
+\item \texttt{plots/prime\_square\_pair\_gaussian\_sign\_triples.svg}
+\end{itemize}
+
+\end{document}
